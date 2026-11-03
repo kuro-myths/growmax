@@ -446,7 +446,8 @@ $('lockBtn').onclick=openLock;$('closeLock').onclick=()=>$('lockModal').classLis
 const chatHistory=[];function openChat(){$('chatModal').classList.add('open');renderChat()}function renderChat(){$('chatLog').innerHTML=chatHistory.map(m=>'<div><b>'+m.from+':</b> '+m.text+'</div>').join('');$('chatLog').scrollTop=$('chatLog').scrollHeight}
 function sendChat(){const raw=$('chatInput').value.trim();if(!raw)return;let text=raw;if(raw==='/help')text='Perintah: /help, /who, /world';else if(raw==='/who')text='Mode lokal: hanya kamu yang berada di world ini.';else if(raw==='/world')text='World saat ini: '+state.world;chatHistory.push({from:'Kamu',text});$('chatInput').value='';renderChat()}
 $('chatBtn').onclick=openChat;$('closeChat').onclick=()=>$('chatModal').classList.remove('open');$('sendChat').onclick=sendChat;$('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat()});
-$('worldBtn').onclick=openWorldModal;$('closeWorld').onclick=()=>$('worldModal').classList.remove('open');\n$('geologyBtn').onclick=()=>{renderGeology();$('geologyModal').classList.add('open')};$('closeGeology').onclick=()=>$('geologyModal').classList.remove('open');
+$('worldBtn').onclick=openWorldModal;$('closeWorld').onclick=()=>$('worldModal').classList.remove('open');
+$('geologyBtn').onclick=()=>{renderGeology();$('geologyModal').classList.add('open')};$('closeGeology').onclick=()=>$('geologyModal').classList.remove('open');
 $('goWorld').onclick=()=>switchWorld($('worldInput').value);
 $('worldInput').addEventListener('keydown',e=>{if(e.key==='Enter')switchWorld($('worldInput').value)});
 function renderGeology(){
