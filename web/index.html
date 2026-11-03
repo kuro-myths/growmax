@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 		<title>Growmax</title>
 		<style>
 html, body, #canvas {
@@ -89,7 +89,15 @@ body {
 	text-align: center;
 	z-index: 1;
 }
-		</style>
+		
+html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; background: #86c9ed; }
+body { position: fixed; inset: 0; touch-action: none; }
+#canvas { position: absolute; inset: 0; display: block; width: 100vw; height: 100vh; outline: none; }
+#status { background: linear-gradient(145deg, #15334b, #285c76); font-family: Arial, sans-serif; }
+#status-splash { max-width: min(70vw, 560px); max-height: 55vh; object-fit: contain; }
+#status-progress { accent-color: #74d66d; width: min(60vw, 420px); }
+#status-notice { max-width: min(80vw, 620px); font-family: Arial, sans-serif; }
+\n</style>
 		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
 
@@ -111,7 +119,7 @@ body {
 
 		<script src="index.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":18160,"index.wasm":43699190},"focusCanvas":true,"gdextensionLibs":[]};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":19328,"index.wasm":43699190},"focusCanvas":true,"gdextensionLibs":[]};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
