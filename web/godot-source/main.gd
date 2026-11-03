@@ -193,13 +193,16 @@ func _build_hud() -> void:
 func _physics_process(delta: float) -> void:
     if not is_instance_valid(player):
         return
-    var input := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+    var input := Vector2.ZERO
+    input.x = float(Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT)) - float(Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT))
+    input.y = float(Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN)) - float(Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP))
+    input = input.normalized() if input.length() > 1.0 else input
     var speed := swim_speed if in_water else walk_speed
     var velocity := player.velocity
     velocity.x = input.x * speed
     velocity.z = input.y * speed
     if player.is_on_floor():
-        velocity.y = 2.0 if in_water else (7.0 if Input.is_action_just_pressed("jump") else 0.0)
+        velocity.y = 2.0 if in_water else (7.0 if Input.is_key_pressed(KEY_SPACE) else 0.0)
     else:
         velocity.y -= (5.0 if in_water else 22.0) * delta
     if in_water:
