@@ -56,9 +56,11 @@
 
 <div class="modal" id="worldModal"><div class="modalhead"><div><h2>🌍 Pindah / Buat World</h2><p>Masukkan kata kunci world-mu. World baru otomatis dibuat dengan terrain unik dari namanya — kayak Minecraft & Growtopia.</p></div><button id="closeWorld">✕</button></div>
  <div class="worldinput"><input id="worldInput" maxlength="20" placeholder="misal: kebunfule, rumah-keren, naga123" autocomplete="off"><button id="goWorld">🚪 Masuk</button></div>
+ <button id="geologyBtn" style="width:100%;margin:8px 0;padding:11px;border:1px solid #6c9b61;border-radius:10px;background:#203b29;color:#dff6d5;font-weight:850">⛏️ Lihat Peta Geologi & Distribusi Material</button>
  <div class="sechead">World yang sudah kamu kunjungi</div><div id="worldList"></div>
  <p style="margin-top:10px">Aturan: huruf kecil a-z, angka 0-9, tanda "-", 3–20 karakter. Terrain & fitur tiap world di-generate dari kata kuncinya (seed) dan progres tiap world tersimpan terpisah.</p>
 </div>
+<div class="modal" id="geologyModal"><div class="modalhead"><div><h2>⛏️ Peta Geologi Growmax</h2><p>Distribusi material dunia berdasarkan seed aktif.</p></div><button id="closeGeology">✕</button></div><div id="geologyBody"></div></div>
 <div class="modal" id="lockModal"><div class="modalhead"><div><h2>🔒 World Lock</h2><p>Kunci world dan atur akses edit. Satu WL mengunci satu world.</p></div><button id="closeLock">✕</button></div><div id="lockBody"></div></div>
 <div class="modal" id="chatModal"><div class="modalhead"><div><h2>💬 Chat World</h2><p id="chatStatus">Mode lokal — pesan belum terkirim ke pemain lain.</p></div><button id="closeChat">✕</button></div><div id="chatLog" style="height:180px;overflow:auto;background:#0e1a12;border-radius:10px;padding:10px;font-size:12px"></div><div class="worldinput"><input id="chatInput" maxlength="180" placeholder="Ketik pesan atau /help"><button id="sendChat">Kirim</button></div><p>Perintah prototipe: /help, /who, /world. Chat online dan voice proximity memerlukan server multiplayer.</p></div>
 <div class="modal" id="store"><div class="modalhead"><div><h2>🏪 Toko</h2><p>Beli benih & blok bangunan dengan gems.</p></div><button id="closeStore">✕</button></div><div class="filter" id="storeFilter"></div><div id="storeItems"></div><div class="sechead">🧱 Blok Bangunan</div><div id="storeBlocks"></div></div>
@@ -141,7 +143,7 @@ scene.add(new THREE.HemisphereLight(0xdaf1ff,0x647b47,2.0));
 const sun=new THREE.DirectionalLight(0xfff0d0,2.3);sun.position.set(-18,30,16);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-25;sun.shadow.camera.right=25;sun.shadow.camera.top=25;sun.shadow.camera.bottom=-25;scene.add(sun);
 const mat=(color,roughness=1)=>new THREE.MeshStandardMaterial({color,roughness});
 const glassMat=color=>new THREE.MeshStandardMaterial({color,roughness:.1,transparent:true,opacity:.55});
-const mats={dirt:mat(0x8b633c),soil:mat(0x68472e),stone:mat(0x777c7c),bedrock:mat(0x30363a),wood:mat(0x9a693a),sand:mat(0xd9c27e)};
+const mats={dirt:mat(0x8b633c),soil:mat(0x68472e),stone:mat(0x777c7c),bedrock:mat(0x30363a),wood:mat(0x9a693a),sand:mat(0xd9c27e),deepslate:mat(0x454b55),gravel:mat(0x88877f),granite:mat(0x986b61),diorite:mat(0xb7b8b1),andesite:mat(0x858b8c),coal:mat(0x30343a),iron:mat(0xc58b68),copper:mat(0xb66c45),gold:mat(0xe3bd45),diamond:mat(0x4bd5cf),lava:new THREE.MeshStandardMaterial({color:0xff5a1f,emissive:0xff3b08,emissiveIntensity:.75}),undergroundWater:glassMat(0x287fae)};\nlet geologyStats={},geologyMeta={};
 const blockMats={};BLOCKS.forEach(b=>blockMats[b.id]=b.glass?glassMat(b.color):mat(b.color));
 const geo=new THREE.BoxGeometry(1,1,1),world=new THREE.Group();scene.add(world);
 const groundMeshes=[],blockMeshes=[],tileObjects=new Map(),plants=new Map(),raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
@@ -156,36 +158,90 @@ function clearWorldMeshes(){while(world.children.length)world.remove(world.child
 function buildWorld(name){
  clearWorldMeshes();
  const rng=mulberry32(hashSeed(name.toLowerCase()));
- // biome: warna rumput & dedaunan unik dari seed
- const palettes=[[0x7fc653,0x398d46],[0x6db84a,0x2e7d3a],[0x8fcf5e,0x4a9e4f],[0x5fae4d,0x2a8040],[0xa8d06a,0x55a54a],[0x74c96b,0x378a52]];
- const pal=palettes[Math.floor(rng()*palettes.length)];
- grassTopMat=mat(pal[0]);
+ const palettes=[
+  {name:'Plains',grass:0x7fc653,leaf:0x398d46,beach:0xd9c27e},
+  {name:'Forest',grass:0x6db84a,leaf:0x2e7d3a,beach:0xcdbb83},
+  {name:'Meadow',grass:0x8fcf5e,leaf:0x4a9e4f,beach:0xe0d29b},
+  {name:'Jungle',grass:0x5fae4d,leaf:0x2a8040,beach:0xbda36f},
+  {name:'Savanna',grass:0xa8d06a,leaf:0x55a54a,beach:0xd7bd7d},
+  {name:'Mossland',grass:0x74c96b,leaf:0x378a52,beach:0xb6c88a}
+ ];
+ const biome=palettes[Math.floor(rng()*palettes.length)];
+ grassTopMat=mat(biome.grass);
+ const geoMats={
+  bedrock:mats.bedrock,deepslate:mats.deepslate,stone:mats.stone,dirt:mats.dirt,
+  gravel:mats.gravel,granite:mats.granite,diorite:mats.diorite,andesite:mats.andesite,
+  coal:mats.coal,iron:mats.iron,copper:mats.copper,gold:mats.gold,diamond:mats.diamond,
+  lava:mats.lava,water:mats.undergroundWater
+ };
+ geologyMeta={seed:name.toLowerCase(),biome:biome.name,width:24,depth:24,minY:-5,maxY:3};
+ geologyStats={Bedrock:0,Deepslate:0,Stone:0,Dirt:0,Gravel:0,Granite:0,Diorite:0,Andesite:0,
+  'Coal Ore':0,'Iron Ore':0,'Copper Ore':0,'Gold Ore':0,'Diamond Ore':0,Lava:0,Water:0,Caves:0};
+ const countGeo=id=>{const labels={bedrock:'Bedrock',deepslate:'Deepslate',stone:'Stone',dirt:'Dirt',gravel:'Gravel',granite:'Granite',diorite:'Diorite',andesite:'Andesite',coal:'Coal Ore',iron:'Iron Ore',copper:'Copper Ore',gold:'Gold Ore',diamond:'Diamond Ore',lava:'Lava',water:'Water'};if(labels[id])geologyStats[labels[id]]++};
+ // Lapisan bawah tanah dibuat untuk seluruh 24x24 kolom. Bagian tepi
+ // dirender sebagai penampang geologi agar strata dan gua terlihat dari kamera.
  for(let x=0;x<24;x++)for(let z=0;z<24;z++){
+  const edge=x===0||z===0||x===23||z===23;
   const beach=x<2||z<2||x>21||z>21;
-  cube(world,x,-.5,z,mats.bedrock);cube(world,x,.5,z,mats.stone);cube(world,x,1.5,z,mats.dirt);cube(world,x,2.5,z,mats.dirt);
+  const column=[];
+  for(let y=-5;y<=2;y++){
+   let id=y===-5?'bedrock':y<=-4?'deepslate':y<=0?'stone':'dirt';
+   if(y===-4&&rng()<.12)id='bedrock';
+   if(y<=0&&id!=='bedrock'){
+    const variant=rng();
+    if(variant<.035)id='gravel';
+    else if(variant<.065)id='granite';
+    else if(variant<.09)id='diorite';
+    else if(variant<.115)id='andesite';
+   }
+   // Vein mineral makin spesifik menurut kedalaman.
+   const ore=rng();
+   if(y>=-1&&y<=1&&ore<.025)id='coal';
+   else if(y>=-3&&y<=0&&ore<.018)id='iron';
+   else if(y>=-3&&y<=-1&&ore<.014)id='copper';
+   else if(y<=-3&&ore<.009)id='gold';
+   else if(y<=-4&&ore<.004)id='diamond';
+   // Kantong gua dan fluida bawah tanah deterministik dari seed.
+   const cave=y>=-3&&y<=0&&rng()<.075;
+   if(cave){geologyStats.Caves++;column.push({y,id:'cave'});continue}
+   if(y<=-3&&rng()<.012)id='lava';
+   else if(y>=-2&&y<=-1&&rng()<.009)id='water';
+   column.push({y,id});countGeo(id);
+   if(edge&&id!=='cave'){
+    const colorMat=geoMats[id]||mats.stone;
+    const block=cube(world,x,y,z,colorMat);
+    block.userData={geo:true,material:id,x,z,y};
+    if(id==='lava'&&x%2===0&&z%2===0){
+     const glow=new THREE.PointLight(0xff5b20,.45,3);glow.position.set(x,y+.3,z);world.add(glow);
+    }
+   }
+  }
+  // Topsoil + surface remains compatible with planting, harvesting and building.
+  cube(world,x,-5.5,z,mats.bedrock);
+  cube(world,x,.5,z,mats.stone);
+  cube(world,x,1.5,z,mats.dirt);
+  cube(world,x,2.5,z,mats.dirt);
   const top=cube(world,x,3.5,z,beach?mats.sand:grassTopMat);
   top.userData={x,z};groundMeshes.push(top);
-  tileObjects.set(key(x,z),{x,z,top,type:beach?'sand':'grass',stack:[],stackMeshes:[]});
+  tileObjects.set(key(x,z),{x,z,top,type:beach?'sand':'grass',stack:[],stackMeshes:[],geology:column});
  }
- // kolam (seeded)
+ // Kolam permukaan berbasis seed.
  if(rng()>.25){const px=4+Math.floor(rng()*16),pz=4+Math.floor(rng()*16),pr=1+Math.floor(rng()*2);
   for(let dx=-pr;dx<=pr;dx++)for(let dz=-pr;dz<=pr;dz++){if(Math.abs(dx)+Math.abs(dz)>pr)continue;const x=px+dx,z=pz+dz;
    if(x<0||x>23||z<0||z>23)continue;const t=tileObjects.get(key(x,z));if(t.type!=='grass')continue;
    t.type='water';t.top.material=glassMat(0x3dadd4)}}
- // pohon dekor (seeded)
+ // Pepohonan dan batu permukaan tetap memakai generator lama.
  const treeCount=9+Math.floor(rng()*12);
  for(let i=0;i<treeCount;i++){const x=2+Math.floor(rng()*20),z=2+Math.floor(rng()*20);
   const t=tileObjects.get(key(x,z));if(!t||t.type!=='grass')continue;if(x>8&&x<16&&z>8&&z<19)continue;
-  makeTree(x,4,z,pal[1],.68+rng()*.4)}
- // batu (seeded)
+  makeTree(x,4,z,biome.leaf,.68+rng()*.4)}
  const rockCount=3+Math.floor(rng()*5);
  for(let i=0;i<rockCount;i++){const x=3+Math.floor(rng()*18),z=3+Math.floor(rng()*18);
-  if(tileObjects.get(key(x,z)).type!=='grass')continue;cube(world,x,4.15,z,mats.stone,.8,.35+rng()*.5,.8)}
- // pulau melayang (seeded)
+  if(tileObjects.get(key(x,z)).type!=='grass')continue;cube(world,x,4.15,z,mats.stone,.8,.35+rng()*.5)}
  const islCount=1+Math.floor(rng()*3);
  for(let i=0;i<islCount;i++){const x=3+Math.floor(rng()*15),z=2+Math.floor(rng()*15),y=9+Math.floor(rng()*2);
   for(let a=0;a<3;a++)for(let b=0;b<3;b++)cube(world,x+a,y,z+b,mats.dirt);
-  for(let a=0;a<3;a++)cube(world,x+a,y+.55,z,mats.grassTop)}
+  for(let a=0;a<3;a++)cube(world,x+a,y+.55,z,grassTopMat)}
 }
 function makeTree(x,y,z,color=0x398d46,scale=1){const g=new THREE.Group();g.position.set(x,y,z);world.add(g);cube(g,0,1*scale,0,mats.wood,.38*scale,2*scale,.38*scale);const leaf=mat(color);cube(g,0,2.35*scale,0,leaf,1.5*scale,1.1*scale,1.5*scale);cube(g,-.45*scale,2.85*scale,0,leaf,.85*scale,.8*scale,.85*scale);cube(g,.45*scale,2.85*scale,.1,leaf,.8*scale,.8*scale,.8*scale);return g}
 buildWorld(state.world);
@@ -386,9 +442,16 @@ $('lockBtn').onclick=openLock;$('closeLock').onclick=()=>$('lockModal').classLis
 const chatHistory=[];function openChat(){$('chatModal').classList.add('open');renderChat()}function renderChat(){$('chatLog').innerHTML=chatHistory.map(m=>'<div><b>'+m.from+':</b> '+m.text+'</div>').join('');$('chatLog').scrollTop=$('chatLog').scrollHeight}
 function sendChat(){const raw=$('chatInput').value.trim();if(!raw)return;let text=raw;if(raw==='/help')text='Perintah: /help, /who, /world';else if(raw==='/who')text='Mode lokal: hanya kamu yang berada di world ini.';else if(raw==='/world')text='World saat ini: '+state.world;chatHistory.push({from:'Kamu',text});$('chatInput').value='';renderChat()}
 $('chatBtn').onclick=openChat;$('closeChat').onclick=()=>$('chatModal').classList.remove('open');$('sendChat').onclick=sendChat;$('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat()});
-$('worldBtn').onclick=openWorldModal;$('closeWorld').onclick=()=>$('worldModal').classList.remove('open');
+$('worldBtn').onclick=openWorldModal;$('closeWorld').onclick=()=>$('worldModal').classList.remove('open');\n$('geologyBtn').onclick=()=>{renderGeology();$('geologyModal').classList.add('open')};$('closeGeology').onclick=()=>$('geologyModal').classList.remove('open');
 $('goWorld').onclick=()=>switchWorld($('worldInput').value);
 $('worldInput').addEventListener('keydown',e=>{if(e.key==='Enter')switchWorld($('worldInput').value)});
+function renderGeology(){
+ const body=$('geologyBody');
+ const total=Object.values(geologyStats).reduce((a,b)=>a+b,0)-geologyStats.Caves;
+ const colors={Bedrock:'#555d66',Deepslate:'#747d89',Stone:'#a2a7a8',Dirt:'#a8794b',Gravel:'#b5b2a7',Granite:'#bd8d80',Diorite:'#d0d0c8',Andesite:'#a4aaab','Coal Ore':'#555b63','Iron Ore':'#c58b68','Copper Ore':'#b66c45','Gold Ore':'#e3bd45','Diamond Ore':'#4bd5cf',Lava:'#ff642b',Water:'#3dadd4'};
+ let rows=Object.entries(geologyStats).filter(([k])=>k!=='Caves').map(([k,v])=>'<div style="display:grid;grid-template-columns:12px 1fr auto;gap:9px;align-items:center;padding:7px 2px;border-bottom:1px solid #ffffff12"><i style="width:11px;height:11px;border-radius:3px;background:'+(colors[k]||'#aaa')+'"></i><span>'+k+'</span><b>'+v.toLocaleString('id-ID')+'</b></div>').join('');
+ body.innerHTML='<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:8px 0 14px"><div class="stat"><small>SEED</small><br><b>'+geologyMeta.seed+'</b></div><div class="stat"><small>BIOME</small><br><b>'+geologyMeta.biome+'</b></div><div class="stat"><small>UKURAN</small><br><b>24 × 24</b></div><div class="stat"><small>KANTONG GUA</small><br><b>'+geologyStats.Caves+'</b></div></div><div style="font-size:12px;color:#b6c4b4;margin-bottom:8px">Penampang Y: Bedrock −5 · Deepslate −4 s.d. −3 · Stone −2 s.d. 0 · Dirt 1 s.d. 2 · Surface 3</div><div style="max-height:42vh;overflow:auto;padding-right:5px">'+rows+'</div><p style="font-size:11px;color:#b6c4b4;margin-top:10px">Angka adalah jumlah sel geologi yang dihasilkan untuk 24 × 24 kolom. Gua dihitung sebagai rongga, bukan blok padat.</p>';
+}
 // ============ MENU ============
 function toggleMenu(on){$('menu').classList.toggle('open',on)}
 $('menuBtn').onclick=e=>{e.stopPropagation();toggleMenu(!$('menu').classList.contains('open'))};
