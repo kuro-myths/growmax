@@ -79,8 +79,11 @@ func _build_terrain() -> void:
             _cube(self, Vector3(x, -0.5, z), Vector3.ONE, bedrock, true)
             _cube(self, Vector3(x, 0.5, z), Vector3.ONE, deep, true)
             _cube(self, Vector3(x, 1.5, z), Vector3.ONE, stone, true)
-            _cube(self, Vector3(x, 2.5, z), Vector3.ONE, dirt, true)
-            _cube(self, Vector3(x, 3.5, z), Vector3.ONE, grass, true)
+            var is_water_basin := x >= 18 and z >= 3 and z <= 11
+            var is_lava_basin := x >= 2 and x <= 12 and z >= 17
+            if not is_water_basin and not is_lava_basin:
+                _cube(self, Vector3(x, 2.5, z), Vector3.ONE, dirt, true)
+                _cube(self, Vector3(x, 3.5, z), Vector3.ONE, grass, true)
     # Dekorasi pulau bertingkat
     for i in range(5):
         var x := 5 + i * 4
@@ -99,30 +102,30 @@ func _build_water() -> void:
     water.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
     water.metallic = 0.12
     # Kolam dangkal di sisi timur; area trigger menggunakan Area3D.
-    _cube(self, Vector3(21, 2.05, 7), Vector3(7, 0.12, 9), water)
+    _cube(self, Vector3(21, 2.85, 7), Vector3(7, 0.12, 9), water)
     var area := Area3D.new()
     area.name = "WaterVolume"
-    area.position = Vector3(21, 2.9, 7)
+    area.position = Vector3(21, 3.5, 7)
     var shape := CollisionShape3D.new()
     var box := BoxShape3D.new()
-    box.size = Vector3(7, 2.2, 9)
+    box.size = Vector3(7, 3.0, 9)
     shape.shape = box
     area.add_child(shape)
     area.body_entered.connect(_on_water_enter)
     area.body_exited.connect(_on_water_exit)
     add_child(area)
     var shore := _mat(Color("#d9c78b"))
-    _cube(self, Vector3(21, 2.0, 2), Vector3(8, 0.25, 1), shore)
+    _cube(self, Vector3(21, 2.6, 2), Vector3(8, 0.25, 1), shore)
 
 func _build_lava() -> void:
     var lava := _mat(Color("#ff5a16"), 0.35, Color("#ff3b08"))
-    _cube(self, Vector3(7, 1.08, 21), Vector3(10, 0.18, 8), lava)
+    _cube(self, Vector3(7, 2.85, 21), Vector3(10, 0.18, 8), lava)
     var area := Area3D.new()
     area.name = "LavaHazard"
-    area.position = Vector3(7, 1.8, 21)
+    area.position = Vector3(7, 3.5, 21)
     var shape := CollisionShape3D.new()
     var box := BoxShape3D.new()
-    box.size = Vector3(10, 2.0, 8)
+    box.size = Vector3(10, 3.0, 8)
     shape.shape = box
     area.add_child(shape)
     area.body_entered.connect(_on_lava_enter)
@@ -130,7 +133,7 @@ func _build_lava() -> void:
     add_child(area)
     var rock := _mat(Color("#353238"))
     for i in range(7):
-        _cube(self, Vector3(2 + i * 1.5, 1.5, 16), Vector3(1.4, 0.7, 1.4), rock, true)
+        _cube(self, Vector3(2 + i * 1.5, 2.2, 16), Vector3(1.4, 0.7, 1.4), rock, true)
 
 func _build_player() -> void:
     player = CharacterBody3D.new()
