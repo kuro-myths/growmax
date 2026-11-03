@@ -5,6 +5,7 @@ Jalankan semua item ini di editor (F5) dan, setelah ekspor web, di browser
 
 ## Boot & dunia
 - [ ] Game dimulai tanpa error di panel Output/Monitor
+- [ ] Ikon di assets/icons/*.svg terimpor tanpa error saat project dibuka
 - [ ] Dunia "starter" muncul: rumput, pantai pasir, pohon, batu, pulau melayang
 - [ ] Kolam air (bila ada) berwarna biru transparan
 - [ ] Kolam lava (bila ada) menyala oranye dan menurunkan HP saat diinjak
@@ -33,6 +34,7 @@ Jalankan semua item ini di editor (F5) dan, setelah ekspor web, di browser
 
 ## UI & sistem
 - [ ] Hotbar 18 slot: klik & tombol 1-9 memilih; jumlah item tampil benar
+- [ ] Ikon tampil benar: chips stat, tombol samping & menu, tombol close panel, slot hotbar (tint warna item, kaca semi-transparan)
 - [ ] Toko [B]: filter rarity, beli seed/blok; saldo tidak bisa negatif
 - [ ] Ransel [I]: tab Benih/Blok/Alat/Statistik; Pakai & Jual berfungsi (jual = 1/2 harga)
 - [ ] Analisis Level: XP bar, log XP, zona terbuka/terkunci

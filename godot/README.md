@@ -34,6 +34,7 @@ tetap ada sebagai arsip — klien inilah yang dikembangkan sekarang.
 | Save/load (growmax-world-v2, autosave 20 dtk, migrasi format lama) | `SaveSystem` + `GameState.to_dict/from_dict` | Selesai |
 | Analisis level, zona, XP log | `AnalysisPanel` | Selesai |
 | HP + damage + respawn (baru) | `Player` + HUD HP bar | Selesai |
+| Ikon UI (emoji HTML) | `IconSet` + `assets/icons/*.svg` (tint warna item) | Selesai |
 
 ## Struktur
 
@@ -41,6 +42,8 @@ tetap ada sebagai arsip — klien inilah yang dikembangkan sekarang.
 godot/
 ├── project.godot            # autoload: Catalog, GameState, SaveSystem, ChatSystem
 ├── export_presets.cfg        # preset ekspor Web (GL Compatibility, tanpa threads)
+├── assets/
+│   └── icons/                # 19 ikon SVG putih 24px (outline, di-tint via modulate)
 ├── scenes/                   # Main.tscn, world/World.tscn, player/Player.tscn
 └── scripts/
     ├── core/                 # Main.gd, game_state.gd, save_system.gd, chat_system.gd
@@ -48,7 +51,7 @@ godot/
     ├── world/                # world_manager.gd, world_gen.gd
     ├── player/               # player.gd
     ├── farming/              # plant.gd
-    └── ui/                   # HUD.gd + 7 panel (modal, shop, inventory, world, lock, chat, analysis, help)
+    └── ui/                   # HUD.gd + 7 panel + icon_set.gd (loader ikon)
 ```
 
 ## Ekspor Web (deploy Vercel)
@@ -65,14 +68,19 @@ godot/
 
 ## Catatan desain
 
-- **Ikon warna, bukan emoji**: font default Godot tidak memuat glyph emoji dan
-  system font fallback tidak tersedia di ekspor web, jadi UI memakai kotak warna
-  item + teks. Data emoji tetap disimpan di katalog (paritas data HTML).
+- **Ikon UI (SVG, offline)**: semua ikon adalah SVG outline putih 24px di
+  `assets/icons/`, diimpor editor Godot dan di-tint lewat `modulate` (chips
+  stats warna masing-masing, tombol aksi, tombol close, dan slot hotbar warna
+  item — kaca semi-transparan). Sengaja dipilih dibanding CDN: fetch ikon saat
+  runtime butuh koneksi internet, kena CORS, dan UI rusak saat offline. Icon
+  font TTF (Font Awesome/Material) juga mungkin tapi butuh file biner yang
+  ditambah manual di editor; Twemoji PNG via CDN bisa jadi opsi emoji nanti.
+  Emoji asli HTML tetap tersimpan di katalog sebagai paritas data.
 - **Lava** adalah tambahan Godot (dibutuhkan HP/hazard): worldgen tetap seeded,
   tetapi urutan RNG sedikit bergeser dari HTML karena kolam lava — layout world
   sama persis nama-antara-engine tidak dijamin identik.
 - **Save kompatibel**: format JSON mengikuti struktur `growmax-world-v2`. Save
   HTML bisa diimpor manual dengan menyalin isinya ke
   `user://growmax_save_v2.json` (migrasi `tiles` di root otomatis didukung).
-- Multiplayer belum aktif — chat & permission disiapikan server-authoritative,
+- Multiplayer belum aktif — chat & permission disiapkan server-authoritative,
   tapi sinkronisasi jaringan belum diimplementasikan dan tidak diklaim jalan.

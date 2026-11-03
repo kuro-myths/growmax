@@ -31,7 +31,13 @@ func _init(p_hud: CanvasLayer, title: String, subtitle: String) -> void:
 	sub_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	tb.add_child(sub_label)
 	var close_btn := Button.new()
-	close_btn.text = "X"
+	var close_tex := IconSet.tex("close")
+	if close_tex != null:
+		close_btn.icon = close_tex
+		close_btn.expand_icon = true
+		close_btn.custom_minimum_size = Vector2(34, 34)
+	else:
+		close_btn.text = "X"
 	close_btn.pressed.connect(close)
 	head.add_child(close_btn)
 	content = VBoxContainer.new()

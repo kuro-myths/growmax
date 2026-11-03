@@ -1,7 +1,8 @@
 extends CanvasLayer
 ## HUD — brand, stats (gems/WL/DL/BGL/level/XP/HP/panen), panel samping,
 ## hotbar 18 slot (13 seed + 5 blok), toast, menu, dan semua panel modal.
-## Ikon memakai warna item (aman untuk font ekspor web, tanpa glyph emoji).
+## Ikon memakai SVG putih dari assets/icons (IconSet) lalu di-tint warna —
+## offline-safe, tanpa CDN/fetch runtime, tanpa glyph emoji.
 
 const MODAL_SCRIPTS := {
 	"world": "res://scripts/ui/world_panel.gd",
@@ -109,10 +110,10 @@ func _build() -> void:
 	stats.offset_top = 12
 	stats.add_theme_constant_override("separation", 6)
 	root.add_child(stats)
-	_mk_chip(stats, "gems", "Gems: 20")
-	_mk_chip(stats, "cur", "WL 1 · DL 0 · BGL 0")
+	_mk_chip(stats, "gems", "Gems: 20", "gem", Color("7de3ff"))
+	_mk_chip(stats, "cur", "WL 1 · DL 0 · BGL 0", "coin", Color("ffd77a"))
 	_mk_level_chip(stats)
-	_mk_chip(stats, "hvt", "Panen: 0")
+	_mk_chip(stats, "hvt", "Panen: 0", "sprout", Color("b5ef79"))
 	_mk_hp_chip(stats)
 
 	var side := PanelContainer.new()
@@ -128,13 +129,13 @@ func _build() -> void:
 	world_label = Label.new()
 	world_label.add_theme_color_override("font_color", Color("b5ef79"))
 	sv.add_child(world_label)
-	_mk_side_button(sv, "Pindah / Buat World [P]", func(): toggle_panel("world"))
-	_mk_side_button(sv, "World Lock", func(): toggle_panel("lock"))
-	_mk_side_button(sv, "Chat World", func(): toggle_panel("chat"))
-	_mk_side_button(sv, "Toko [B]", func(): toggle_panel("shop"))
-	_mk_side_button(sv, "Ransel [I]", func(): toggle_panel("inventory"))
-	_mk_side_button(sv, "Analisis Level", func(): toggle_panel("analysis"))
-	_mk_side_button(sv, "Menu", func(): _toggle_menu())
+	_mk_side_button(sv, "globe", "Pindah / Buat World [P]", func(): toggle_panel("world"))
+	_mk_side_button(sv, "lock", "World Lock", func(): toggle_panel("lock"))
+	_mk_side_button(sv, "chat", "Chat World", func(): toggle_panel("chat"))
+	_mk_side_button(sv, "cart", "Toko [B]", func(): toggle_panel("shop"))
+	_mk_side_button(sv, "bag", "Ransel [I]", func(): toggle_panel("inventory"))
+	_mk_side_button(sv, "chart", "Analisis Level", func(): toggle_panel("analysis"))
+	_mk_side_button(sv, "menu", "Menu", func(): _toggle_menu())
 	var sub := Label.new()
 	sub.text = "Mode lokal · progres tersimpan otomatis"
 	sub.add_theme_font_size_override("font_size", 10)
@@ -152,17 +153,17 @@ func _build() -> void:
 	root.add_child(menu_panel)
 	var mv := VBoxContainer.new()
 	menu_panel.add_child(mv)
-	_mk_side_button(mv, "Simpan Progres", func():
+	_mk_side_button(mv, "save", "Simpan Progres", func():
 		SaveSystem.save_game()
 		GameState.notify("Progres disimpan.")
 		_toggle_menu())
 	demo_label = Label.new()
 	mv.add_child(demo_label)
-	_mk_side_button(mv, "Toggle Demo 60x [F]", func(): toggle_demo())
-	_mk_side_button(mv, "Bantuan & Kontrol", func():
+	_mk_side_button(mv, "bolt", "Toggle Demo 60x [F]", func(): toggle_demo())
+	_mk_side_button(mv, "help", "Bantuan & Kontrol", func():
 		_toggle_menu()
 		toggle_panel("help"))
-	_mk_side_button(mv, "Reset Progres", func(): _confirm_reset())
+	_mk_side_button(mv, "trash", "Reset Progres", func(): _confirm_reset())
 
 	var ch := Label.new()
 	ch.text = "+"
@@ -197,13 +198,18 @@ func _build() -> void:
 		_mk_slot(hb, i, items[i])
 
 
-func _mk_chip(parent: Control, key: String, text: String) -> void:
+func _mk_chip(parent: Control, key: String, text: String, icon_name := "", tint: Color = Color(1, 1, 1)) -> void:
 	var p := PanelContainer.new()
 	p.add_theme_stylebox_override("panel", _panel_style())
 	parent.add_child(p)
+	var hb := HBoxContainer.new()
+	hb.add_theme_constant_override("separation", 6)
+	p.add_child(hb)
+	if icon_name != "":
+		hb.add_child(IconSet.icon_rect(icon_name, 14, tint))
 	var l := Label.new()
 	l.text = text
-	p.add_child(l)
+	hb.add_child(l)
 	stat_labels[key] = l
 
 
@@ -213,9 +219,13 @@ func _mk_level_chip(parent: Control) -> void:
 	parent.add_child(p)
 	var v := VBoxContainer.new()
 	p.add_child(v)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 6)
+	v.add_child(row)
+	row.add_child(IconSet.icon_rect("star", 14, Color("ffd77a")))
 	var l := Label.new()
 	l.text = "Lv 1"
-	v.add_child(l)
+	row.add_child(l)
 	stat_labels["lvl"] = l
 	xp_bar = ProgressBar.new()
 	xp_bar.min_value = 0.0
@@ -231,9 +241,13 @@ func _mk_hp_chip(parent: Control) -> void:
 	parent.add_child(p)
 	var v := VBoxContainer.new()
 	p.add_child(v)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 6)
+	v.add_child(row)
+	row.add_child(IconSet.icon_rect("heart", 14, Color("ff7d7d")))
 	var l := Label.new()
 	l.text = "HP"
-	v.add_child(l)
+	row.add_child(l)
 	hp_bar = ProgressBar.new()
 	hp_bar.min_value = 0.0
 	hp_bar.max_value = GameState.MAX_HP
@@ -242,9 +256,13 @@ func _mk_hp_chip(parent: Control) -> void:
 	v.add_child(hp_bar)
 
 
-func _mk_side_button(parent: Control, text: String, cb: Callable) -> void:
+func _mk_side_button(parent: Control, icon_name: String, text: String, cb: Callable) -> void:
 	var b := Button.new()
 	b.text = text
+	var t := IconSet.tex(icon_name)
+	if t != null:
+		b.icon = t
+		b.add_theme_constant_override("icon_max_width", 16)
 	b.pressed.connect(cb)
 	parent.add_child(b)
 
@@ -258,8 +276,8 @@ func _mk_slot(parent: Control, index: int, it: Dictionary) -> void:
 	var v := VBoxContainer.new()
 	v.alignment = BoxContainer.ALIGNMENT_CENTER
 	p.add_child(v)
-	var icon := ColorRect.new()
-	icon.custom_minimum_size = Vector2(22, 22)
+	var icon_name := "sprout" if String(it["kind"]) == "seed" else "cube"
+	var icon := IconSet.icon_rect(icon_name, 22)
 	v.add_child(icon)
 	var name_l := Label.new()
 	name_l.add_theme_font_size_override("font_size", 8)
@@ -299,7 +317,7 @@ func _refresh() -> void:
 		var col := Color(String(ref["color"]))
 		if bool(ref.get("glass", false)):
 			col = Color(String(ref["color"]), 0.5)
-		s["icon"].color = col
+		s["icon"].modulate = col
 		var nm := String(ref["name"])
 		if String(it["kind"]) == "seed":
 			nm = nm.replace("Pohon ", "")
