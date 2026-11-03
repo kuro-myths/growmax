@@ -19,7 +19,9 @@ CREATE TABLE IF NOT EXISTS player_profiles (
     display_name   varchar(32) NOT NULL,
     level          integer     NOT NULL DEFAULT 1,
     xp             integer     NOT NULL DEFAULT 0,
+    xp_total       integer     NOT NULL DEFAULT 0,
     gems           bigint      NOT NULL DEFAULT 20,
+    gems_earned    bigint      NOT NULL DEFAULT 0,
     harvested_count integer    NOT NULL DEFAULT 0,
     planted_count  integer     NOT NULL DEFAULT 0,
     created_at     timestamptz NOT NULL DEFAULT now(),
@@ -36,10 +38,14 @@ CREATE TABLE IF NOT EXISTS item_definitions (
     metadata jsonb       NOT NULL DEFAULT '{}'
 );
 
+-- rarity_score: skala 1-100 terinspirasi seed Growtopia (Rare Seed Pack: 13-60).
+-- tier dihitung: 1-12 umum, 13-24 tidak umum, 25-40 langka, 41-60 epik,
+-- 61-80 legendaris, 81-100 mistis.
 CREATE TABLE IF NOT EXISTS seed_definitions (
     id             varchar(48) PRIMARY KEY,
     name           varchar(64) NOT NULL,
     rarity         varchar(16) NOT NULL,
+    rarity_score   integer     NOT NULL DEFAULT 1,
     growth_seconds integer     NOT NULL,
     gem_min        integer     NOT NULL,
     gem_max        integer     NOT NULL,
@@ -82,7 +88,7 @@ CREATE TABLE IF NOT EXISTS plants (
     seed_id    varchar(48) NOT NULL REFERENCES seed_definitions(id),
     planted_at timestamptz NOT NULL DEFAULT now(),
     water      integer     NOT NULL DEFAULT 100,
-    watered_at timestamptz NOT NULL DEFAULT now(),
+    watered_at timestamptz,
     harvested  boolean     NOT NULL DEFAULT false,
     UNIQUE (world_id, x, z)
 );
@@ -104,13 +110,14 @@ CREATE TABLE IF NOT EXISTS harvest_logs (
     seed_id      varchar(48) NOT NULL,
     seeds_gained integer NOT NULL,
     gems_gained  bigint  NOT NULL,
+    water_bonus  boolean NOT NULL DEFAULT false,
     created_at   timestamptz NOT NULL DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS transactions (
     id          bigserial PRIMARY KEY,
     player_id   uuid    NOT NULL REFERENCES player_profiles(id) ON DELETE CASCADE,
-    kind        varchar(24) NOT NULL, -- harvest | store_purchase | trade | admin_grant
+    kind        varchar(24) NOT NULL, -- harvest | store_purchase | sell | trade | admin_grant
     amount      bigint  NOT NULL,
     balance     bigint  NOT NULL,
     note        text,

@@ -1,19 +1,34 @@
 {
-  "version": "1.0.0",
-  "description": "Data-driven harvest reward config — inspired by Bedrock behavior packs. Server membaca nilai ini; sumber kebenaran hasil panen ada di server, bukan client.",
+  "version": "1.1.0",
+  "description": "Data-driven harvest & rarity config — inspired by Bedrock behavior packs. Skala rarity 1-100 terinspirasi seed Growtopia (Rare Seed Pack: 13-60); semua data orisinal. Sumber kebenaran reward ada di server, bukan client.",
   "levelBonusPerLevel": 0.03,
-  "waterBonusThreshold": 60,
   "waterBonusMultiplier": 1.25,
   "minimumSeedsOnHarvest": 1,
   "xpPerHarvestBase": 5,
   "xpPerGemUnit": 0.25,
+  "xpPerTill": 2,
   "waterDecayPerSecond": 0.2,
+  "rarityTiers": [
+    { "id": "common",    "name": "Umum",        "min": 1,  "max": 12 },
+    { "id": "uncommon",  "name": "Tidak Umum", "min": 13, "max": 24 },
+    { "id": "rare",      "name": "Langka",     "min": 25, "max": 40 },
+    { "id": "epic",      "name": "Epik",       "min": 41, "max": 60 },
+    { "id": "legendary", "name": "Legendaris",  "min": 61, "max": 80 },
+    { "id": "mythic",    "name": "Mistis",     "min": 81, "max": 100 }
+  ],
   "seeds": [
-    { "id": "door",      "name": "Door Tree",      "rarity": "common",     "growthSeconds": 300,   "gem": [3, 8],     "seed": [1, 2], "price": 5 },
-    { "id": "apple",     "name": "Apple Tree",     "rarity": "uncommon",   "growthSeconds": 900,   "gem": [10, 20],   "seed": [1, 3], "price": 25 },
-    { "id": "pine",      "name": "Pine Tree",      "rarity": "uncommon",   "growthSeconds": 1200,  "gem": [12, 26],   "seed": [1, 3], "price": 30 },
-    { "id": "crystal",   "name": "Crystal Tree",   "rarity": "rare",       "growthSeconds": 3600,  "gem": [40, 70],   "seed": [2, 4], "price": 80 },
-    { "id": "diamond",   "name": "Diamond Tree",   "rarity": "epic",      "growthSeconds": 10800, "gem": [120, 250], "seed": [3, 5], "price": 250 },
-    { "id": "legendary", "name": "Legendary Tree",  "rarity": "legendary", "growthSeconds": 86400, "gem": [400, 900], "seed": [5, 9], "price": 800 }
+    { "id": "door",      "name": "Pohon Pintu",     "rarity": "common",    "rarityScore": 2,  "growthSeconds": 300,   "gem": [3, 8],      "seed": [1, 2],  "price": 5 },
+    { "id": "grass",     "name": "Pohon Rumput",    "rarity": "common",    "rarityScore": 5,  "growthSeconds": 420,   "gem": [4, 10],     "seed": [1, 2],  "price": 8 },
+    { "id": "apple",     "name": "Pohon Apel",      "rarity": "uncommon",  "rarityScore": 15, "growthSeconds": 900,   "gem": [10, 20],    "seed": [1, 3],  "price": 25 },
+    { "id": "pine",      "name": "Pohon Pinus",     "rarity": "uncommon",  "rarityScore": 17, "growthSeconds": 1200,  "gem": [12, 26],    "seed": [1, 3],  "price": 30 },
+    { "id": "orange",    "name": "Pohon Jeruk",     "rarity": "uncommon",  "rarityScore": 19, "growthSeconds": 1500,  "gem": [14, 30],    "seed": [1, 3],  "price": 40 },
+    { "id": "cactus",    "name": "Kaktus Emas",    "rarity": "uncommon",  "rarityScore": 21, "growthSeconds": 1800,  "gem": [18, 38],    "seed": [2, 3],  "price": 55 },
+    { "id": "coral",     "name": "Terumbu Karang",  "rarity": "rare",     "rarityScore": 25, "growthSeconds": 2700,  "gem": [30, 60],    "seed": [2, 4],  "price": 80 },
+    { "id": "crystal",   "name": "Pohon Kristal",   "rarity": "rare",     "rarityScore": 33, "growthSeconds": 3600,  "gem": [40, 70],    "seed": [2, 4],  "price": 120 },
+    { "id": "manggis",   "name": "Pohon Manggis",   "rarity": "epic",     "rarityScore": 41, "growthSeconds": 5400,  "gem": [90, 180],   "seed": [3, 5],  "price": 220 },
+    { "id": "diamond",   "name": "Pohon Berlian",   "rarity": "epic",     "rarityScore": 52, "growthSeconds": 10800, "gem": [120, 250],  "seed": [3, 5],  "price": 350 },
+    { "id": "durian",    "name": "Pohon Durian",    "rarity": "epic",     "rarityScore": 58, "growthSeconds": 14400, "gem": [200, 420],  "seed": [4, 6],  "price": 500 },
+    { "id": "legendary", "name": "Pohon Legendaris","rarity": "legendary","rarityScore": 72, "growthSeconds": 43200, "gem": [400, 900],  "seed": [5, 9],  "price": 1200 },
+    { "id": "naga",      "name": "Pohon Naga",      "rarity": "mythic",   "rarityScore": 88, "growthSeconds": 86400, "gem": [800, 2000], "seed": [6, 10], "price": 2500 }
   ]
 }
