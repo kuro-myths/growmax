@@ -3,7 +3,10 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#101b14"><title>Growmax — GrowCraft 3D</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" referrerpolicy="no-referrer">
 <style>
+.fa-solid,.fa-brands{display:inline-block;min-width:1.1em;text-align:center}.slot .fa-solid{font-size:19px}.side .fa-solid{width:20px;color:#b5ef79}.recipe{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px;border:1px solid #ffffff20;border-radius:10px;margin:7px 0;background:#ffffff08}.recipe small{display:block;color:var(--muted);font-size:11px}.recipe button,.action-btn{border:1px solid #64845d;background:#29432e;color:#efffea;border-radius:8px;padding:8px 11px;font-weight:800}.storage-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:8px}.storage-cell{padding:9px;border:1px solid #ffffff20;border-radius:9px;background:#ffffff08}
+
 :root{color-scheme:dark;--bg:#101b14;--panel:#18291e;--line:#38523d;--green:#b5ef79;--gold:#ffd77a;--muted:#b6c4b4}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#86b9e8;color:#f3f8ef;font:14px/1.4 Inter,system-ui,sans-serif}#game{position:fixed;inset:0}canvas{display:block;width:100%;height:100%}
 .hud{position:fixed;z-index:5;inset:14px 14px auto;display:flex;justify-content:space-between;gap:12px;pointer-events:none}.brand,.stats,.panel,.toast,.crosshair,.hotbar,.modal{pointer-events:auto}.brand{background:#122019df;border:1px solid #ffffff2b;border-radius:14px;padding:9px 13px;font-weight:950;letter-spacing:.1em;box-shadow:0 8px 24px #0003}.brand span{color:var(--green)}.stats{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end;align-items:flex-start}.stat{background:#122019df;border:1px solid #ffffff2b;border-radius:12px;padding:8px 11px;font-weight:800;box-shadow:0 8px 24px #0003;min-width:84px}.stat b{color:var(--green)}
@@ -41,7 +44,8 @@
  <button id="chatBtn">💬 Chat World</button>
  <button id="storeBtn">🏪 Toko [B]</button>
  <button id="invBtn">🎒 Ransel [I]</button>
- <button id="analysisBtn">🔍 Analisis Level</button>
+ <button id="analysisBtn"><i class="fa-solid fa-chart-line"></i> Analisis Level</button>
+ <button id="craftBtn"><i class="fa-solid fa-hammer"></i> Crafting [C]</button>
  <button id="menuBtn">⚙️ Menu</button>
  <div class="sub" id="apiStatus">Mode lokal · progres di browser</div>
 </div>
@@ -65,6 +69,8 @@
 <div class="modal" id="chatModal"><div class="modalhead"><div><h2>💬 Chat World</h2><p id="chatStatus">Mode lokal — pesan belum terkirim ke pemain lain.</p></div><button id="closeChat">✕</button></div><div id="chatLog" style="height:180px;overflow:auto;background:#0e1a12;border-radius:10px;padding:10px;font-size:12px"></div><div class="worldinput"><input id="chatInput" maxlength="180" placeholder="Ketik pesan atau /help"><button id="sendChat">Kirim</button></div><p>Perintah prototipe: /help, /who, /world. Chat online dan voice proximity memerlukan server multiplayer.</p></div>
 <div class="modal" id="store"><div class="modalhead"><div><h2>🏪 Toko</h2><p>Beli benih & blok bangunan dengan gems.</p></div><button id="closeStore">✕</button></div><div class="filter" id="storeFilter"></div><div id="storeItems"></div><div class="sechead">🧱 Blok Bangunan</div><div id="storeBlocks"></div></div>
 <div class="modal" id="inventory"><div class="modalhead"><div><h2>🎒 Ransel</h2><p id="invSummary"></p></div><button id="closeInv">✕</button></div><div class="filter" id="invTabs"></div><div id="invItems"></div></div>
+<div class="modal" id="craftModal"><div class="modalhead"><div><h2><i class="fa-solid fa-hammer"></i> Crafting</h2><p>Rakit alat dan penyimpanan dari material.</p></div><button id="closeCraft">✕</button></div><div id="craftItems"></div></div>
+<div class="modal" id="storageModal"><div class="modalhead"><div><h2><i class="fa-solid fa-box-archive"></i> Storage Pack</h2><p id="storageSummary">Penyimpanan pribadi 24 slot.</p></div><button id="closeStorage">✕</button></div><div id="storageItems"></div></div>
 <div class="modal" id="analysis"><div class="modalhead"><div><h2>🔍 Analisis Level</h2><p>Progres, sumber XP, dan zona yang terbuka.</p></div><button id="closeAnalysis">✕</button></div><div id="analysisBody"></div></div>
 <div class="modal" id="helpModal"><div class="modalhead"><div><h2>❓ Bantuan</h2><p>Kontrol Growmax.</p></div><button id="closeHelp">✕</button></div>
  <div style="font-size:13px;line-height:2">
@@ -118,13 +124,14 @@ const blockById=id=>BLOCKS.find(b=>b.id===id)||BLOCKS[0];
 const ZONES=[{name:'Permukaan',lv:1},{name:'Bawah Tanah',lv:6},{name:'Gua',lv:11},{name:'Gua Dalam',lv:21},{name:'Magma',lv:31}];
 // ============ STATE (kompatibel save lama) ============
 const DEFAULTS={gems:20,wl:1,dl:0,bgl:0,level:1,xp:0,xpTotal:0,harvests:0,planted:0,gemsEarned:0,selected:0,
- inventory:{door:1},blockInv:{wood:60,brick:30,stone:40,sand:20,glass:20},
+ inventory:{door:1,storage_pack:0},blockInv:{wood:60,brick:30,stone:40,sand:20,glass:20},tools:{pickaxe:0},storage:{},
  xpLog:[],world:'starter',worlds:{starter:{tiles:{},player:{x:12,z:15},created:Date.now()}},tiles:{}};
 let loaded=null;try{loaded=JSON.parse(localStorage.getItem(SAVE_KEY))}catch{}
 const state=Object.assign({},DEFAULTS,loaded||{});
 state.wl=Math.max(0,Number(state.wl)||0);state.dl=Math.max(0,Number(state.dl)||0);state.bgl=Math.max(0,Number(state.bgl)||0);
 state.inventory=Object.assign({},DEFAULTS.inventory,(loaded&&loaded.inventory)||{});
 state.blockInv=Object.assign({},DEFAULTS.blockInv,(loaded&&loaded.blockInv)||{});
+state.tools=Object.assign({},DEFAULTS.tools,(loaded&&loaded.tools)||{});state.storage=Object.assign({},DEFAULTS.storage,(loaded&&loaded.storage)||{});
 state.xpLog=(loaded&&loaded.xpLog)||[];
 state.worlds=(loaded&&loaded.worlds)||{};
 if(loaded&&loaded.tiles&&!Object.keys(state.worlds).length){ // migrasi save lama -> world starter
@@ -276,7 +283,12 @@ function save(){const wd=state.worlds[state.world];wd.tiles=state.tiles;wd.playe
 function addXp(n,source){state.xp+=n;state.xpTotal+=n;state.xpLog.unshift('+'+Math.round(n)+' XP — '+source);if(state.xpLog.length>25)state.xpLog.length=25;let leveled=false;while(state.xp>=state.level*100){state.xp-=state.level*100;state.level++;leveled=true}if(leveled){const z=ZONES.find(zn=>zn.lv===state.level);toast('⬆️ Level '+state.level+'!'+(z?' Zona "'+z.name+'" terbuka!':''))}refresh()}
 function tierBadge(r){const t=tierOf(r);return '<span class="rbadge" style="color:'+t.color+';border-color:'+t.color+'66;background:'+t.color+'18">'+t.name+' · '+r+'</span>'}
 function fmtGrow(sec){const m=sec/60;return m<60?Math.round(m)+' mnt':m<1440?Math.round(m/60)+' jam':Math.round(m/1440)+' hari'}
-const HOTBAR=SEEDS.map(s=>({kind:'seed',ref:s})).concat(BLOCKS.map(b=>({kind:'block',ref:b})));
+const TOOL_ITEMS=[{id:'pickaxe',name:'Linggis'}];
+const HOTBAR=SEEDS.map(s=>({kind:'seed',ref:s})).concat(BLOCKS.map(b=>({kind:'block',ref:b})),TOOL_ITEMS.map(t=>({kind:'tool',ref:t})));
+const ICONS={door:'door-open',grass:'wheat-awn',apple:'apple-whole',pine:'tree',orange:'lemon',cactus:'seedling',coral:'water',crystal:'gem',manggis:'circle',diamond:'diamond',durian:'lemon',legendary:'star',naga:'dragon',wood:'cubes',brick:'border-all',stone:'mountain',sand:'grip',glass:'cube',pickaxe:'hammer'};
+const iconHtml=id=>'<i class="fa-solid fa-'+(ICONS[id]||'cube')+'"></i>';
+const toolSelected=()=>selectedItem()?.kind==='tool';
+const hitProgress=new Map();
 function selectItem(i){state.selected=i;refresh()}
 function selectedItem(){return HOTBAR[state.selected]}
 // ============ HUD ============
@@ -288,11 +300,12 @@ function refresh(){
  const bar=$('hotbar');bar.innerHTML='';
  HOTBAR.forEach((it,i)=>{const b=document.createElement('button');b.className='slot'+(state.selected===i?' active':'');
   if(it.kind==='seed'){const s=it.ref,t=tierOf(s.rarity);
-   b.innerHTML='<span class="rare" style="background:'+t.color+'"></span><span>'+s.emoji+'</span><small>'+s.name.replace('Pohon ','')+'</small><em>'+((state.inventory[s.id]||0))+'</em>';
+   b.innerHTML='<span class="rare" style="background:'+t.color+'"></span><span>'+iconHtml(s.id)+'</span><small>'+s.name.replace('Pohon ','')+'</small><em>'+((state.inventory[s.id]||0))+'</em>';
    b.title=s.name+' · '+t.name+' ('+s.rarity+')';}
-  else{const bl=it.ref;
-   b.innerHTML='<span>'+bl.emoji+'</span><small>'+bl.name.replace('Blok ','')+'</small><em>'+((state.blockInv[bl.id]||0))+'</em>';
+  else if(it.kind==='block'){const bl=it.ref;
+   b.innerHTML='<span>'+iconHtml(bl.id)+'</span><small>'+bl.name.replace('Blok ','')+'</small><em>'+((state.blockInv[bl.id]||0))+'</em>;
    b.title=bl.name+' — E untuk pasang';}
+  else{const tool=it.ref;b.innerHTML='<span>'+iconHtml(tool.id)+'</span><small>'+tool.name+'</small><em>'+(state.tools.pickaxe||0)+'/100</em>';b.title='Linggis · daya tahan '+(state.tools.pickaxe||0)+'%';}
   b.onclick=()=>selectItem(i);bar.appendChild(b)})}
 function growth(p){const s=seedById(p.id),mult=accelerated?60:1;return Math.max(0,(s.time*1000-(Date.now()-p.plantedAt)*mult))}
 function updatePlants(){for(const p of plants.values()){const s=seedById(p.id),left=growth(p),progress=1-left/(s.time*1000);const scale=.25+Math.min(1,progress)*.75;p.crown.scale.set(scale,scale,scale);p.crown.position.y=1.2+progress*.45;if(left<=0&&p.crown.userData.ready!==1){p.crown.material=mat(s.color).clone();p.crown.material.emissive=new THREE.Color(s.color);p.crown.material.emissiveIntensity=.35;p.crown.userData.ready=1}}}
@@ -302,9 +315,13 @@ function aimTile(){return raycastTile(lastPointer.x,lastPointer.y)||(()=>{const 
 // ============ PUNCH: panen / hancurkan blok / garap ============
 function performPunch(hit){
  if(!hit)return;const {x,z,blockIdx}=hit;
- if(blockIdx!==undefined){ // pukul blok bangunan
+ if(blockIdx!==undefined){ // hit point: pukul berulang sampai blok pecah
   const t=tileObjects.get(key(x,z));if(!t||!t.stack.length)return;
-  const topIdx=t.stack.length-1,bid=t.stack[topIdx];
+  const topIdx=t.stack.length-1,bid=t.stack[topIdx],hardness={wood:2,brick:4,stone:5,sand:1,glass:1}[bid]||3,k=key(x,z)+':'+topIdx;
+  const damage=toolSelected()&&(state.tools.pickaxe||0)>0?2:1,progress=(hitProgress.get(k)||0)+damage;
+  if(toolSelected()&&(state.tools.pickaxe||0)>0){state.tools.pickaxe=Math.max(0,state.tools.pickaxe-1);refresh()}
+  if(progress<hardness){hitProgress.set(k,progress);toast('⛏️ '+blockById(bid).name+' · hit '+progress+'/'+hardness+(toolSelected()?' · linggis aktif':''));return}
+  hitProgress.delete(k);
   world.remove(t.stackMeshes[topIdx]);t.stackMeshes.splice(topIdx,1);t.stack.splice(topIdx,1);
   for(let i=0;i<blockMeshes.length;i++)if(blockMeshes[i].userData.x===x&&blockMeshes[i].userData.z===z&&blockMeshes[i].userData.blockIdx===topIdx){blockMeshes.splice(i,1);break}
   state.blockInv[bid]=(state.blockInv[bid]||0)+1;addXp(1,'Menghancurkan '+blockById(bid).name);
@@ -325,6 +342,7 @@ function performPunch(hit){
  else if(t.type==='soil')toast('Petak sudah digarap — tekan E untuk menanam.');}
 // ============ E: tanam seed / pasang blok ============
 function interact(){const hit=aimTile();if(!hit)return;const {x,z}=hit;const it=selectedItem();
+ if(it.kind==='tool'){if((state.tools.pickaxe||0)<=0){toast('Linggis rusak. Buat lagi di Crafting [C].');return}toast('Linggis dipilih. Klik kiri berulang untuk menghancurkan blok lebih cepat.');return}
  if(it.kind==='seed'){const t=tileObjects.get(key(x,z));if(!t)return;
   if(t.type!=='soil'){toast('Garap rumput dulu (klik kiri), lalu tekan E di tanah garap.');return}
   const s=it.ref;if((state.inventory[s.id]||0)<1){toast('Seed '+s.name+' habis. Beli di toko [B].');return}
@@ -359,6 +377,15 @@ function openStore(){renderFilter($('storeFilter'),['all'].concat(RARITY_TIERS.m
 function renderFilter(el,ids,active,cb){el.innerHTML='';const names={all:'Semua'};RARITY_TIERS.forEach(t=>names[t.id]=t.name);
  ids.forEach(id=>{const b=document.createElement('button');b.textContent=names[id]||id;if(id!=='all'){const t=RARITY_TIERS.find(t=>t.id===id);if(t)b.style.cssText='color:'+t.color};if(active===id)b.classList.add('on');b.onclick=()=>cb(id);el.append(b)})}
 // ============ RANSEL ============
+function openCraft(){
+ const root=$('craftItems');root.innerHTML='';
+ const recipes=[{id:'pickaxe',name:'Linggis',icon:'fa-hammer',desc:'Alat tambang. Mengurangi jumlah hit untuk menghancurkan blok. Daya tahan 100 hit.',cost:{wood:8,stone:12},run:()=>{state.tools.pickaxe=100;toast('Linggis berhasil dibuat!')}},{id:'storage_pack',name:'Storage Pack',icon:'fa-box-archive',desc:'Membuka penyimpanan pribadi 24 jenis item.',cost:{wood:12,brick:4},run:()=>{state.inventory.storage_pack=(state.inventory.storage_pack||0)+1;toast('Storage Pack berhasil dibuat! Buka dari Ransel.')}}];
+ recipes.forEach(r=>{const row=document.createElement('div');row.className='recipe';const costs=Object.entries(r.cost).map(([id,n])=>n+' '+blockById(id).name.replace('Blok ','')).join(' + ');const info=document.createElement('div');info.innerHTML='<b><i class="fa-solid '+r.icon+'"></i> '+r.name+'</b><small>'+r.desc+'</small><small>Bahan: '+costs+'</small>';const btn=document.createElement('button');btn.textContent='Craft';btn.disabled=Object.entries(r.cost).some(([id,n])=>(state.blockInv[id]||0)<n);btn.onclick=()=>{if(Object.entries(r.cost).some(([id,n])=>(state.blockInv[id]||0)<n)){toast('Bahan belum cukup.');return}Object.entries(r.cost).forEach(([id,n])=>state.blockInv[id]-=n);r.run();refresh();save();openCraft()};row.append(info,btn);root.append(row)});$('craftModal').classList.add('open');}
+function openStorage(){
+ if(!(state.inventory.storage_pack>0)){toast('Belum punya Storage Pack. Craft dulu di [C].');return}
+ const root=$('storageItems');root.innerHTML='<p>Storage Pack menyimpan item terpisah dari ransel utama. Pilih item untuk memindahkan 1 unit.</p><div class="storage-grid" id="storageGrid"></div>';const grid=root.querySelector('#storageGrid');
+ const entries=SEEDS.map(x=>({id:x.id,name:x.name,kind:'seed'})).concat(BLOCKS.map(x=>({id:x.id,name:x.name,kind:'block'})));
+ entries.forEach(it=>{const count=it.kind==='seed'?(state.inventory[it.id]||0):(state.blockInv[it.id]||0),stored=state.storage[it.id]||0;const cell=document.createElement('div');cell.className='storage-cell';cell.innerHTML='<b>'+it.name+'</b><small>Ransel: '+count+' · Storage: '+stored+'</small>';const acts=document.createElement('div');acts.style='display:flex;gap:5px;margin-top:7px';const put=document.createElement('button');put.className='action-btn';put.textContent='Simpan 1';put.disabled=count<1;put.onclick=()=>{if(it.kind==='seed')state.inventory[it.id]--;else state.blockInv[it.id]--;state.storage[it.id]=(state.storage[it.id]||0)+1;save();refresh();openStorage()};const take=document.createElement('button');take.className='action-btn';take.textContent='Ambil 1';take.disabled=stored<1;take.onclick=()=>{state.storage[it.id]--;if(it.kind==='seed')state.inventory[it.id]=(state.inventory[it.id]||0)+1;else state.blockInv[it.id]=(state.blockInv[it.id]||0)+1;save();refresh();openStorage()};acts.append(put,take);cell.append(acts);grid.append(cell)});$('storageSummary').textContent='Storage Pack dimiliki: '+state.inventory.storage_pack+' · Kapasitas item unik: 24';$('storageModal').classList.add('open');}
 function openInventory(){
  renderFilter($('invTabs'),['seeds','blocks','tools','stats'],invTab,id=>{invTab=id;openInventory()});
  const names={seeds:'🌱 Benih',blocks:'🧱 Blok',tools:'🛠️ Alat',stats:'📊 Statistik'};
@@ -389,6 +416,8 @@ function openInventory(){
    sellBtn.onclick=()=>{state.blockInv[b.id]--;state.gems+=Math.floor(b.price/2);refresh();openInventory();save();toast('Terjual! +💎'+Math.floor(b.price/2))};
    acts.append(useBtn,sellBtn);card.append(info,mid,acts);root.append(card)})}
  if(invTab==='tools'){
+  const pack=document.createElement('div');pack.className='invcard';pack.innerHTML='<div class="ic"><i class="fa-solid fa-box-archive"></i></div><div><b>Storage Pack</b><small>Dimiliki: '+(state.inventory.storage_pack||0)+' · Penyimpanan 24 jenis item.</small></div>';const packBtn=document.createElement('button');packBtn.textContent='Buka';packBtn.onclick=openStorage;pack.append(packBtn);root.append(pack);
+  const pick=document.createElement('div');pick.className='invcard';pick.innerHTML='<div class="ic"><i class="fa-solid fa-hammer"></i></div><div><b>Linggis</b><small>Daya tahan: '+(state.tools.pickaxe||0)+'/100 · Craft di menu Crafting.</small></div>';const equip=document.createElement('button');equip.textContent='Pakai';equip.onclick=()=>{selectItem(SEEDS.length+BLOCKS.length);toast('Linggis dipilih. Klik kiri untuk menambang.')};pick.append(equip);root.append(pick);
   const tools=[
    {emoji:'✊',name:'Tinju Dasar',desc:'Klik kiri: garap rumput, panen tanaman, atau hancurkan blok (dikembalikan ke ransel).'},
    {emoji:'💧',name:'Kaleng Penyiram',desc:'Tekan Q di depan tanaman untuk menyiram — +25% gem saat dipanen.'},
@@ -469,13 +498,14 @@ $('mSave').onclick=()=>{save();toast('Progres disimpan di browser ini.');toggleM
 $('mDemo').onclick=()=>{accelerated=!accelerated;$('mDemo').textContent='⏩ Mode Demo 60×: '+(accelerated?'AKTIF':'MATI');toast(accelerated?'Mode demo 60× aktif':'Mode realtime aktif')};
 $('mHelp').onclick=()=>{$('helpModal').classList.add('open');toggleMenu(false)};
 $('mReset').onclick=()=>{if(confirm('Hapus SEMUA progres (semua world)? Tidak bisa dibatalkan.')){localStorage.removeItem(SAVE_KEY);location.reload()}};
+$('craftBtn').onclick=openCraft;$('closeCraft').onclick=()=>$('craftModal').classList.remove('open');$('closeStorage').onclick=()=>$('storageModal').classList.remove('open');
 $('storeBtn').onclick=openStore;$('closeStore').onclick=()=>$('store').classList.remove('open');
 $('invBtn').onclick=openInventory;$('closeInv').onclick=()=>$('inventory').classList.remove('open');
 $('analysisBtn').onclick=openAnalysis;$('closeAnalysis').onclick=()=>$('analysis').classList.remove('open');
 $('closeHelp').onclick=()=>$('helpModal').classList.remove('open');
 // ============ INPUT ============
 function onKey(e,down){const k=e.key.toLowerCase();if(['w','a','s','d',' ','arrowup','arrowdown','arrowleft','arrowright'].includes(k))e.preventDefault();if(k==='w'||k==='arrowup')move.forward=down;if(k==='s'||k==='arrowdown')move.back=down;if(k==='a'||k==='arrowleft')move.left=down;if(k==='d'||k==='arrowright')move.right=down;
- if(down&&!e.repeat){if(k===' ')jumping=true;if(k==='e')interact();if(k==='q')water();
+ if(down&&!e.repeat){if(k===' ')jumping=true;if(k==='e')interact();if(k==='q')water();if(k==='c')openCraft();
   if(k==='b'){const st=$('store');st.classList.contains('open')?st.classList.remove('open'):openStore()}
   if(k==='p'){const wm=$('worldModal');wm.classList.contains('open')?wm.classList.remove('open'):openWorldModal()}
   if(k==='i'){const im=$('inventory');im.classList.contains('open')?im.classList.remove('open'):openInventory()}
