@@ -143,7 +143,7 @@ scene.add(new THREE.HemisphereLight(0xdaf1ff,0x647b47,2.0));
 const sun=new THREE.DirectionalLight(0xfff0d0,2.3);sun.position.set(-18,30,16);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-25;sun.shadow.camera.right=25;sun.shadow.camera.top=25;sun.shadow.camera.bottom=-25;scene.add(sun);
 const mat=(color,roughness=1)=>new THREE.MeshStandardMaterial({color,roughness});
 const glassMat=color=>new THREE.MeshStandardMaterial({color,roughness:.1,transparent:true,opacity:.55});
-const mats={dirt:mat(0x8b633c),soil:mat(0x68472e),stone:mat(0x777c7c),bedrock:mat(0x30363a),wood:mat(0x9a693a),sand:mat(0xd9c27e),deepslate:mat(0x454b55),gravel:mat(0x88877f),granite:mat(0x986b61),diorite:mat(0xb7b8b1),andesite:mat(0x858b8c),coal:mat(0x30343a),iron:mat(0xc58b68),copper:mat(0xb66c45),gold:mat(0xe3bd45),diamond:mat(0x4bd5cf),snow:mat(0xe8f1f4),lava:new THREE.MeshStandardMaterial({color:0xff5a1f,emissive:0xff3b08,emissiveIntensity:.75}),undergroundWater:glassMat(0x287fae)};
+const mats={dirt:mat(0x8b633c),soil:mat(0x68472e),stone:mat(0x777c7c),bedrock:mat(0x30363a),wood:mat(0x9a693a),sand:mat(0xd9c27e),deepslate:mat(0x454b55),gravel:mat(0x88877f),granite:mat(0x986b61),diorite:mat(0xb7b8b1),andesite:mat(0x858b8c),coal:mat(0x30343a),iron:mat(0xc58b68),copper:mat(0xb66c45),gold:mat(0xe3bd45),diamond:mat(0x4bd5cf),emerald:mat(0x43b86c),snow:mat(0xe8f1f4),lava:new THREE.MeshStandardMaterial({color:0xff5a1f,emissive:0xff3b08,emissiveIntensity:.75}),undergroundWater:glassMat(0x287fae)};
 let geologyStats={},geologyMeta={};
 const blockMats={};BLOCKS.forEach(b=>blockMats[b.id]=b.glass?glassMat(b.color):mat(b.color));
 const geo=new THREE.BoxGeometry(1,1,1),world=new THREE.Group();scene.add(world);
@@ -174,13 +174,14 @@ function buildWorld(name){
  const geoMats={
   bedrock:mats.bedrock,deepslate:mats.deepslate,stone:mats.stone,dirt:mats.dirt,
   gravel:mats.gravel,granite:mats.granite,diorite:mats.diorite,andesite:mats.andesite,
-  coal:mats.coal,iron:mats.iron,copper:mats.copper,gold:mats.gold,diamond:mats.diamond,
+  coal:mats.coal,iron:mats.iron,copper:mats.copper,gold:mats.gold,diamond:mats.diamond,emerald:mats.emerald,
   lava:mats.lava,water:mats.undergroundWater
  };
  geologyMeta={seed:name.toLowerCase(),biome:biome.name,width:24,depth:24,minY:-5,maxY:3};
  geologyStats={Bedrock:0,Deepslate:0,Stone:0,Dirt:0,Gravel:0,Granite:0,Diorite:0,Andesite:0,
-  'Coal Ore':0,'Iron Ore':0,'Copper Ore':0,'Gold Ore':0,'Diamond Ore':0,Lava:0,Water:0,Caves:0};
- const countGeo=id=>{const labels={bedrock:'Bedrock',deepslate:'Deepslate',stone:'Stone',dirt:'Dirt',gravel:'Gravel',granite:'Granite',diorite:'Diorite',andesite:'Andesite',coal:'Coal Ore',iron:'Iron Ore',copper:'Copper Ore',gold:'Gold Ore',diamond:'Diamond Ore',lava:'Lava',water:'Water'};if(labels[id])geologyStats[labels[id]]++};
+  'Coal Ore':0,'Iron Ore':0,'Copper Ore':0,'Gold Ore':0,'Diamond Ore':0,'Emerald Ore':0,Lava:0,Water:0,Caves:0};
+ const caveCenters=Array.from({length:4+Math.floor(rng()*4)},()=>({x:2+rng()*20,z:2+rng()*20,y:-3+rng()*3,rx:2.2+rng()*2.2,rz:2.2+rng()*2.2,ry:1.1+rng()*.5}));
+ const countGeo=id=>{const labels={bedrock:'Bedrock',deepslate:'Deepslate',stone:'Stone',dirt:'Dirt',gravel:'Gravel',granite:'Granite',diorite:'Diorite',andesite:'Andesite',coal:'Coal Ore',iron:'Iron Ore',copper:'Copper Ore',gold:'Gold Ore',diamond:'Diamond Ore',emerald:'Emerald Ore',lava:'Lava',water:'Water'};if(labels[id])geologyStats[labels[id]]++};
  // Lapisan bawah tanah dibuat untuk seluruh 24x24 kolom. Bagian tepi
  // dirender sebagai penampang geologi agar strata dan gua terlihat dari kamera.
  for(let x=0;x<24;x++)for(let z=0;z<24;z++){
@@ -203,9 +204,10 @@ function buildWorld(name){
    else if(y>-5&&y>=-3&&ore<.018)id='iron';
    else if(y>-5&&y>=-3&&y<=-1&&ore<.014)id='copper';
    else if(y>-5&&y<=-3&&ore<.009)id='gold';
+   else if(biome.name==='Mossland'&&y===-4&&ore<.003)id='emerald';
    else if(y>-5&&y<=-4&&ore<.004)id='diamond';
    // Kantong gua dan fluida bawah tanah deterministik dari seed.
-   const cave=y>-5&&y>=-3&&y<=-1&&rng()<.075;
+   const cave=y>-5&&y>=-3&&y<=-1&&caveCenters.some(c=>{const dx=(x-c.x)/c.rx,dz=(z-c.z)/c.rz,dy=(y-c.y)/c.ry;return dx*dx+dz*dz+dy*dy<1.08})&&rng()>.08;
    if(cave){geologyStats.Caves++;column.push({y,id:'cave'});continue}
    if(y>-5&&y<=-3&&rng()<.012)id='lava';
    else if(y>=-2&&y<=-1&&rng()<.009)id='water';
@@ -454,7 +456,7 @@ $('worldInput').addEventListener('keydown',e=>{if(e.key==='Enter')switchWorld($(
 function renderGeology(){
  const body=$('geologyBody');
  const total=Object.values(geologyStats).reduce((a,b)=>a+b,0)-geologyStats.Caves;
- const colors={Bedrock:'#555d66',Deepslate:'#747d89',Stone:'#a2a7a8',Dirt:'#a8794b',Gravel:'#b5b2a7',Granite:'#bd8d80',Diorite:'#d0d0c8',Andesite:'#a4aaab','Coal Ore':'#555b63','Iron Ore':'#c58b68','Copper Ore':'#b66c45','Gold Ore':'#e3bd45','Diamond Ore':'#4bd5cf',Lava:'#ff642b',Water:'#3dadd4'};
+ const colors={Bedrock:'#555d66',Deepslate:'#747d89',Stone:'#a2a7a8',Dirt:'#a8794b',Gravel:'#b5b2a7',Granite:'#bd8d80',Diorite:'#d0d0c8',Andesite:'#a4aaab','Coal Ore':'#555b63','Iron Ore':'#c58b68','Copper Ore':'#b66c45','Gold Ore':'#e3bd45','Diamond Ore':'#4bd5cf','Emerald Ore':'#43b86c',Lava:'#ff642b',Water:'#3dadd4'};
  let rows=Object.entries(geologyStats).filter(([k])=>k!=='Caves').map(([k,v])=>'<div style="display:grid;grid-template-columns:12px 1fr auto;gap:9px;align-items:center;padding:7px 2px;border-bottom:1px solid #ffffff12"><i style="width:11px;height:11px;border-radius:3px;background:'+(colors[k]||'#aaa')+'"></i><span>'+k+'</span><b>'+v.toLocaleString('id-ID')+'</b></div>').join('');
  body.innerHTML='<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:8px 0 14px"><div class="stat"><small>SEED</small><br><b>'+geologyMeta.seed+'</b></div><div class="stat"><small>BIOME</small><br><b>'+geologyMeta.biome+'</b></div><div class="stat"><small>UKURAN</small><br><b>24 × 24</b></div><div class="stat"><small>KANTONG GUA</small><br><b>'+geologyStats.Caves+'</b></div></div><div style="font-size:12px;color:#b6c4b4;margin-bottom:8px">Penampang Y: Bedrock −5 · Deepslate −4 s.d. −3 · Stone −2 s.d. −1 · Topsoil: Stone + 2 lapis Dirt · Surface 3</div><div style="max-height:42vh;overflow:auto;padding-right:5px">'+rows+'</div><p style="font-size:11px;color:#b6c4b4;margin-top:10px">Angka adalah jumlah sel geologi yang dihasilkan untuk 24 × 24 kolom. Gua dihitung sebagai rongga, bukan blok padat.</p>';
 }
