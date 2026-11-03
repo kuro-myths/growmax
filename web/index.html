@@ -143,7 +143,7 @@ scene.add(new THREE.HemisphereLight(0xdaf1ff,0x647b47,2.0));
 const sun=new THREE.DirectionalLight(0xfff0d0,2.3);sun.position.set(-18,30,16);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-25;sun.shadow.camera.right=25;sun.shadow.camera.top=25;sun.shadow.camera.bottom=-25;scene.add(sun);
 const mat=(color,roughness=1)=>new THREE.MeshStandardMaterial({color,roughness});
 const glassMat=color=>new THREE.MeshStandardMaterial({color,roughness:.1,transparent:true,opacity:.55});
-const mats={dirt:mat(0x8b633c),soil:mat(0x68472e),stone:mat(0x777c7c),bedrock:mat(0x30363a),wood:mat(0x9a693a),sand:mat(0xd9c27e),deepslate:mat(0x454b55),gravel:mat(0x88877f),granite:mat(0x986b61),diorite:mat(0xb7b8b1),andesite:mat(0x858b8c),coal:mat(0x30343a),iron:mat(0xc58b68),copper:mat(0xb66c45),gold:mat(0xe3bd45),diamond:mat(0x4bd5cf),lava:new THREE.MeshStandardMaterial({color:0xff5a1f,emissive:0xff3b08,emissiveIntensity:.75}),undergroundWater:glassMat(0x287fae)};
+const mats={dirt:mat(0x8b633c),soil:mat(0x68472e),stone:mat(0x777c7c),bedrock:mat(0x30363a),wood:mat(0x9a693a),sand:mat(0xd9c27e),deepslate:mat(0x454b55),gravel:mat(0x88877f),granite:mat(0x986b61),diorite:mat(0xb7b8b1),andesite:mat(0x858b8c),coal:mat(0x30343a),iron:mat(0xc58b68),copper:mat(0xb66c45),gold:mat(0xe3bd45),diamond:mat(0x4bd5cf),snow:mat(0xe8f1f4),lava:new THREE.MeshStandardMaterial({color:0xff5a1f,emissive:0xff3b08,emissiveIntensity:.75}),undergroundWater:glassMat(0x287fae)};
 let geologyStats={},geologyMeta={};
 const blockMats={};BLOCKS.forEach(b=>blockMats[b.id]=b.glass?glassMat(b.color):mat(b.color));
 const geo=new THREE.BoxGeometry(1,1,1),world=new THREE.Group();scene.add(world);
@@ -165,7 +165,9 @@ function buildWorld(name){
   {name:'Meadow',grass:0x8fcf5e,leaf:0x4a9e4f,beach:0xe0d29b},
   {name:'Jungle',grass:0x5fae4d,leaf:0x2a8040,beach:0xbda36f},
   {name:'Savanna',grass:0xa8d06a,leaf:0x55a54a,beach:0xd7bd7d},
-  {name:'Mossland',grass:0x74c96b,leaf:0x378a52,beach:0xb6c88a}
+  {name:'Mossland',grass:0x74c96b,leaf:0x378a52,beach:0xb6c88a},
+  {name:'Desert',grass:0xc7a45a,leaf:0x9a7c38,beach:0xd9c27e},
+  {name:'Snow',grass:0xc8d8d9,leaf:0x668d82,beach:0xdce7e9}
  ];
  const biome=palettes[Math.floor(rng()*palettes.length)];
  grassTopMat=mat(biome.grass);
@@ -218,13 +220,14 @@ function buildWorld(name){
    }
   }
   // Topsoil + surface remains compatible with planting, harvesting and building.
-  cube(world,x,-5.5,z,mats.bedrock);
   cube(world,x,.5,z,mats.stone);
   cube(world,x,1.5,z,mats.dirt);
   cube(world,x,2.5,z,mats.dirt);
-  const top=cube(world,x,3.5,z,beach?mats.sand:grassTopMat);
+  const surfaceType=beach||biome.name==='Desert'?'sand':biome.name==='Snow'?'snow':'grass';
+  const surfaceMaterial=surfaceType==='sand'?mats.sand:surfaceType==='snow'?mats.snow:grassTopMat;
+  const top=cube(world,x,3.5,z,surfaceMaterial);
   top.userData={x,z};groundMeshes.push(top);
-  tileObjects.set(key(x,z),{x,z,top,type:beach?'sand':'grass',stack:[],stackMeshes:[],geology:column});
+  tileObjects.set(key(x,z),{x,z,top,type:surfaceType,stack:[],stackMeshes:[],geology:column});
  }
  // Kolam permukaan berbasis seed.
  if(rng()>.25){const px=4+Math.floor(rng()*16),pz=4+Math.floor(rng()*16),pr=1+Math.floor(rng()*2);
@@ -232,7 +235,7 @@ function buildWorld(name){
    if(x<0||x>23||z<0||z>23)continue;const t=tileObjects.get(key(x,z));if(t.type!=='grass')continue;
    t.type='water';t.top.material=glassMat(0x3dadd4)}}
  // Pepohonan dan batu permukaan tetap memakai generator lama.
- const treeCount=9+Math.floor(rng()*12);
+ const treeCount=biome.name==='Desert'?2+Math.floor(rng()*3):biome.name==='Snow'?4+Math.floor(rng()*4):9+Math.floor(rng()*12);
  for(let i=0;i<treeCount;i++){const x=2+Math.floor(rng()*20),z=2+Math.floor(rng()*20);
   const t=tileObjects.get(key(x,z));if(!t||t.type!=='grass')continue;if(x>8&&x<16&&z>8&&z<19)continue;
   makeTree(x,4,z,biome.leaf,.68+rng()*.4)}
