@@ -177,7 +177,8 @@ function buildWorld(name){
   coal:mats.coal,iron:mats.iron,copper:mats.copper,gold:mats.gold,diamond:mats.diamond,emerald:mats.emerald,
   lava:mats.lava,water:mats.undergroundWater
  };
- geologyMeta={seed:name.toLowerCase(),biome:biome.name,width:24,depth:24,minY:-5,maxY:3};
+ geologyMeta={seed:name.toLowerCase(),biome:biome.name,width:24,depth:24,minY:-5,maxY:3,generatorVersion:2};
+ if(state.worlds&&state.worlds[name]){state.worlds[name].seed=name.toLowerCase();state.worlds[name].generatorVersion=2;}
  geologyStats={Bedrock:0,Deepslate:0,Stone:0,Dirt:0,Gravel:0,Granite:0,Diorite:0,Andesite:0,
   'Coal Ore':0,'Iron Ore':0,'Copper Ore':0,'Gold Ore':0,'Diamond Ore':0,'Emerald Ore':0,Lava:0,Water:0,Caves:0};
  const caveCenters=Array.from({length:4+Math.floor(rng()*4)},()=>({x:2+rng()*20,z:2+rng()*20,y:-3+rng()*3,rx:2.2+rng()*2.2,rz:2.2+rng()*2.2,ry:1.1+rng()*.5}));
@@ -458,7 +459,7 @@ function renderGeology(){
  const total=Object.values(geologyStats).reduce((a,b)=>a+b,0)-geologyStats.Caves;
  const colors={Bedrock:'#555d66',Deepslate:'#747d89',Stone:'#a2a7a8',Dirt:'#a8794b',Gravel:'#b5b2a7',Granite:'#bd8d80',Diorite:'#d0d0c8',Andesite:'#a4aaab','Coal Ore':'#555b63','Iron Ore':'#c58b68','Copper Ore':'#b66c45','Gold Ore':'#e3bd45','Diamond Ore':'#4bd5cf','Emerald Ore':'#43b86c',Lava:'#ff642b',Water:'#3dadd4'};
  let rows=Object.entries(geologyStats).filter(([k])=>k!=='Caves').map(([k,v])=>'<div style="display:grid;grid-template-columns:12px 1fr auto;gap:9px;align-items:center;padding:7px 2px;border-bottom:1px solid #ffffff12"><i style="width:11px;height:11px;border-radius:3px;background:'+(colors[k]||'#aaa')+'"></i><span>'+k+'</span><b>'+v.toLocaleString('id-ID')+'</b></div>').join('');
- body.innerHTML='<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:8px 0 14px"><div class="stat"><small>SEED</small><br><b>'+geologyMeta.seed+'</b></div><div class="stat"><small>BIOME</small><br><b>'+geologyMeta.biome+'</b></div><div class="stat"><small>UKURAN</small><br><b>24 × 24</b></div><div class="stat"><small>KANTONG GUA</small><br><b>'+geologyStats.Caves+'</b></div></div><div style="font-size:12px;color:#b6c4b4;margin-bottom:8px">Penampang Y: Bedrock −5 · Deepslate −4 s.d. −3 · Stone −2 s.d. −1 · Topsoil: Stone + 2 lapis Dirt · Surface 3</div><div style="max-height:42vh;overflow:auto;padding-right:5px">'+rows+'</div><p style="font-size:11px;color:#b6c4b4;margin-top:10px">Angka adalah jumlah sel geologi yang dihasilkan untuk 24 × 24 kolom. Gua dihitung sebagai rongga, bukan blok padat.</p>';
+ body.innerHTML='<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:8px 0 14px"><div class="stat"><small>SEED</small><br><b>'+geologyMeta.seed+'</b></div><div class="stat"><small>BIOME</small><br><b>'+geologyMeta.biome+'</b></div><div class="stat"><small>UKURAN</small><br><b>24 × 24</b></div><div class="stat"><small>KANTONG GUA</small><br><b>'+geologyStats.Caves+'</b></div><div class="stat"><small>GENERATOR</small><br><b>v'+geologyMeta.generatorVersion+'</b></div></div><div style="font-size:12px;color:#b6c4b4;margin-bottom:8px">Penampang Y: Bedrock −5 · Deepslate −4 s.d. −3 · Stone −2 s.d. −1 · Topsoil: Stone + 2 lapis Dirt · Surface 3</div><div style="max-height:42vh;overflow:auto;padding-right:5px">'+rows+'</div><p style="font-size:11px;color:#b6c4b4;margin-top:10px">Angka adalah jumlah sel geologi yang dihasilkan untuk 24 × 24 kolom. Gua dihitung sebagai rongga, bukan blok padat.</p>';
 }
 // ============ MENU ============
 function toggleMenu(on){$('menu').classList.toggle('open',on)}
