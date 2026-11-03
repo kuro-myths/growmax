@@ -1,0 +1,55 @@
+name: Build Godot Web and deploy on Vercel
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web/godot-source/**"
+      - ".github/workflows/godot-web.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  export-web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Godot 4.4.1 and Web templates
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.4.1
+          use-dotnet: false
+          include-templates: true
+
+      - name: Validate project and export official Godot Web build
+        shell: bash
+        run: |
+          godot --headless --path web/godot-source --editor --quit
+          godot --headless --path web/godot-source --export-release "Web" web/index.html
+
+      - name: Verify export artifacts
+        shell: bash
+        run: |
+          test -s web/index.html
+          find web -maxdepth 1 -type f \( -name "*.wasm" -o -name "*.pck" -o -name "*.js" \) -print
+          test "$(find web -maxdepth 1 -type f -name "*.wasm" | wc -l)" -ge 1
+          test "$(find web -maxdepth 1 -type f -name "*.pck" | wc -l)" -ge 1
+
+      - name: Commit exported game files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add web/index.html web/*.wasm web/*.pck web/*.js web/*.png
+          if git diff --cached --quiet; then
+            echo "No exported changes"
+          else
+            git commit -m "Build official Godot Web export"
+            git push origin HEAD:main
+          fi
