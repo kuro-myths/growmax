@@ -6,23 +6,23 @@
 <style>
 :root{color-scheme:dark;--bg:#101b14;--panel:#18291e;--line:#38523d;--green:#b5ef79;--gold:#ffd77a;--muted:#b6c4b4}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#86b9e8;color:#f3f8ef;font:14px/1.4 Inter,system-ui,sans-serif}#game{position:fixed;inset:0}canvas{display:block;width:100%;height:100%}
-.hud{position:fixed;z-index:5;inset:14px 14px auto;display:flex;justify-content:space-between;gap:12px;pointer-events:none}.brand,.stats,.panel,.toast,.crosshair,.hotbar,.modal{pointer-events:auto}.brand{background:#122019df;border:1px solid #ffffff2b;border-radius:14px;padding:9px 13px;font-weight:950;letter-spacing:.1em;box-shadow:0 8px 24px #0003}.brand span{color:var(--green)}.stats{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end;align-items:flex-start}.stat{background:#122019df;border:1px solid #ffffff2b;border-radius:12px;padding:8px 11px;font-weight:800;box-shadow:0 8px 24px #0003;min-width:86px}.stat b{color:var(--green)}
+.hud{position:fixed;z-index:5;inset:14px 14px auto;display:flex;justify-content:space-between;gap:12px;pointer-events:none}.brand,.stats,.panel,.toast,.crosshair,.hotbar,.modal{pointer-events:auto}.brand{background:#122019df;border:1px solid #ffffff2b;border-radius:14px;padding:9px 13px;font-weight:950;letter-spacing:.1em;box-shadow:0 8px 24px #0003}.brand span{color:var(--green)}.stats{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end;align-items:flex-start}.stat{background:#122019df;border:1px solid #ffffff2b;border-radius:12px;padding:8px 11px;font-weight:800;box-shadow:0 8px 24px #0003;min-width:84px}.stat b{color:var(--green)}
 .xpbar{height:5px;background:#ffffff20;border-radius:4px;margin-top:5px;overflow:hidden}.xpbar i{display:block;height:100%;background:linear-gradient(90deg,#b5ef79,#ffd77a);border-radius:4px}
-.bottom{position:fixed;z-index:5;left:50%;bottom:16px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;width:min(96vw,760px);pointer-events:none}.hotbar{display:flex;gap:6px;padding:7px;background:#122019e8;border:1px solid #ffffff35;border-radius:15px;box-shadow:0 12px 35px #0005;flex-wrap:wrap;justify-content:center;max-width:100%}.slot{width:52px;height:56px;border:1px solid #ffffff24;background:#ffffff0b;color:#fff;border-radius:10px;display:grid;place-items:center;gap:0;cursor:pointer;font-size:21px;position:relative;padding:2px 0}.slot small{font-size:8px;color:#d4dfd1;max-width:46px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.slot.active{border:2px solid var(--green);background:#b5ef7926;box-shadow:0 0 0 2px #b5ef7930}.slot em{position:absolute;right:3px;top:1px;font-size:10px;font-style:normal;color:var(--gold)}.slot .rare{position:absolute;left:3px;top:1px;width:7px;height:7px;border-radius:50%}
+.bottom{position:fixed;z-index:5;left:50%;bottom:16px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;width:min(96vw,820px);pointer-events:none}.hotbar{display:flex;gap:5px;padding:7px;background:#122019e8;border:1px solid #ffffff35;border-radius:15px;box-shadow:0 12px 35px #0005;flex-wrap:wrap;justify-content:center;max-width:100%}.slot{width:48px;height:54px;border:1px solid #ffffff24;background:#ffffff0b;color:#fff;border-radius:10px;display:grid;place-items:center;gap:0;cursor:pointer;font-size:19px;position:relative;padding:2px 0}.slot small{font-size:8px;color:#d4dfd1;max-width:44px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.slot.active{border:2px solid var(--green);background:#b5ef7926;box-shadow:0 0 0 2px #b5ef7930}.slot em{position:absolute;right:3px;top:1px;font-size:10px;font-style:normal;color:var(--gold)}.slot .rare{position:absolute;left:3px;top:1px;width:6px;height:6px;border-radius:50%}
 .side{position:fixed;z-index:5;right:14px;top:92px;width:196px;background:#122019dc;border:1px solid #ffffff2b;border-radius:14px;padding:12px;box-shadow:0 8px 24px #0003}.side b{color:var(--green)}.side button,.modal button,.invtab,.menu button{border:1px solid #ffffff25;background:#29432f;color:#f2f7ed;padding:8px 10px;border-radius:9px;cursor:pointer;font:inherit;font-weight:750}.side button{width:100%;margin-top:7px}.side button:hover,.modal button:hover,.invtab:hover,.menu button:hover{background:#3c5d3d}.side .sub{color:#c1d0bf;font-size:11px;margin-top:6px}
 .toast{position:fixed;z-index:9;left:50%;top:85px;transform:translateX(-50%);background:#122019ed;border:1px solid #ffffff35;border-radius:12px;padding:10px 15px;box-shadow:0 10px 30px #0005;opacity:0;transition:opacity .2s;max-width:90vw;text-align:center}.toast.show{opacity:1}
 .crosshair{position:fixed;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%);width:17px;height:17px;border:1px solid #fff9;border-radius:50%;box-shadow:0 1px 4px #0008;pointer-events:none}
 .modal{position:fixed;z-index:10;left:50%;top:50%;transform:translate(-50%,-50%);width:min(94vw,520px);max-height:82vh;overflow:auto;background:#14251b;border:1px solid #57734e;border-radius:18px;padding:18px;box-shadow:0 25px 80px #0009;display:none}.modal.open{display:block}.modal h2{margin:0 0 5px}.modal p{color:var(--muted);font-size:12px}.shoprow,.invcard{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #ffffff18}.shoprow:last-child{border:0}.shoprow small,.invcard small{display:block;color:var(--muted)}.shoprow button{white-space:nowrap;background:#a7df70;color:#132016}.modalhead{display:flex;justify-content:space-between;align-items:center}.modalhead button{background:#3a493d}
 .rbadge{display:inline-block;font-size:10px;font-weight:800;padding:1px 8px;border-radius:999px;border:1px solid}
-.invgrid{display:grid;grid-template-columns:1fr;gap:2px}
-.invcard .ic{font-size:26px;width:40px;text-align:center}
-.invcard .acts{display:flex;gap:6px}
+.invcard .ic{font-size:26px;width:40px;text-align:center}.invcard .acts{display:flex;gap:6px}
 .filter{display:flex;gap:5px;flex-wrap:wrap;margin:8px 0}.filter button{padding:4px 9px;font-size:11px;border-radius:999px;border:1px solid #ffffff25;background:#1c2f23;color:#dfe9da}.filter button.on{background:#a7df70;color:#132016;border-color:#a7df70}
 .zonelist div{padding:5px 0;border-bottom:1px solid #ffffff12;display:flex;justify-content:space-between;font-size:12px}
 .xpline{background:#ffffff0a;border-radius:9px;padding:7px 10px;margin-top:6px;font-size:12px}
-.menu{position:fixed;z-index:11;right:14px;top:200px;width:196px;background:#14251b;border:1px solid #57734e;border-radius:14px;padding:10px;display:none;box-shadow:0 12px 40px #0008}.menu.open{display:block}.menu button{width:100%;margin-top:6px;display:block;text-align:left}
+.menu{position:fixed;z-index:11;right:14px;top:290px;width:196px;background:#14251b;border:1px solid #57734e;border-radius:14px;padding:10px;display:none;box-shadow:0 12px 40px #0008}.menu.open{display:block}.menu button{width:100%;margin-top:6px;display:block;text-align:left}
+.worldinput{display:flex;gap:8px;margin:10px 0}.worldinput input{flex:1;background:#0e1a12;border:1px solid #ffffff30;color:#fff;border-radius:9px;padding:9px 11px;font:inherit}.worldchip{display:inline-block;background:#1c2f23;border:1px solid #ffffff25;border-radius:999px;padding:4px 12px;margin:3px 3px 0 0;cursor:pointer;font-size:12px}.worldchip:hover{background:#3c5d3d}
+.sechead{margin:14px 0 2px;font-size:13px;color:var(--gold)}
 #loading{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:#101b14;color:#dcebd5;font-weight:800;letter-spacing:.06em}
-@media(max-width:650px){.hud{inset:8px 8px auto}.brand{font-size:11px;padding:7px}.stat{font-size:11px;padding:6px 8px;min-width:64px}.side{top:auto;bottom:150px;right:8px;width:120px;padding:8px;font-size:11px}.side .sub{display:none}.menu{top:auto;bottom:150px}.slot{width:42px;height:48px;font-size:18px}.bottom{bottom:8px;width:97vw}}
+@media(max-width:650px){.hud{inset:8px 8px auto}.brand{font-size:11px;padding:7px}.stat{font-size:11px;padding:6px 8px;min-width:60px}.side{top:auto;bottom:170px;right:8px;width:120px;padding:8px;font-size:11px}.side .sub{display:none}.menu{top:auto;bottom:170px}.slot{width:42px;height:48px;font-size:17px}.bottom{bottom:8px;width:97vw}}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js"}}</script>
 </head>
@@ -35,7 +35,8 @@
 </div></div>
 <div class="side">
  <b id="worldname">WORLD: STARTER</b>
- <button id="storeBtn">🏪 Toko Seed [B]</button>
+ <button id="worldBtn">🌍 Pindah World [P]</button>
+ <button id="storeBtn">🏪 Toko [B]</button>
  <button id="invBtn">🎒 Ransel [I]</button>
  <button id="analysisBtn">🔍 Analisis Level</button>
  <button id="menuBtn">⚙️ Menu</button>
@@ -50,16 +51,22 @@
 <div class="crosshair"></div><div class="toast" id="toast"></div>
 <div class="bottom"><div class="hotbar" id="hotbar"></div></div>
 
-<div class="modal" id="store"><div class="modalhead"><div><h2>🏪 Toko Seed</h2><p>Beli benih dengan gems — reward panen selalu seed + gem sesuai rarity & level.</p></div><button id="closeStore">✕</button></div><div class="filter" id="storeFilter"></div><div id="storeItems"></div></div>
+<div class="modal" id="worldModal"><div class="modalhead"><div><h2>🌍 Pindah / Buat World</h2><p>Masukkan kata kunci world-mu. World baru otomatis dibuat dengan terrain unik dari namanya — kayak Minecraft & Growtopia.</p></div><button id="closeWorld">✕</button></div>
+ <div class="worldinput"><input id="worldInput" maxlength="20" placeholder="misal: kebunfule, rumah-keren, naga123" autocomplete="off"><button id="goWorld">🚪 Masuk</button></div>
+ <div class="sechead">World yang sudah kamu kunjungi</div><div id="worldList"></div>
+ <p style="margin-top:10px">Aturan: huruf kecil a-z, angka 0-9, tanda "-", 3–20 karakter. Terrain & fitur tiap world di-generate dari kata kuncinya (seed) dan progres tiap world tersimpan terpisah.</p>
+</div>
+<div class="modal" id="store"><div class="modalhead"><div><h2>🏪 Toko</h2><p>Beli benih & blok bangunan dengan gems.</p></div><button id="closeStore">✕</button></div><div class="filter" id="storeFilter"></div><div id="storeItems"></div><div class="sechead">🧱 Blok Bangunan</div><div id="storeBlocks"></div></div>
 <div class="modal" id="inventory"><div class="modalhead"><div><h2>🎒 Ransel</h2><p id="invSummary"></p></div><button id="closeInv">✕</button></div><div class="filter" id="invTabs"></div><div id="invItems"></div></div>
 <div class="modal" id="analysis"><div class="modalhead"><div><h2>🔍 Analisis Level</h2><p>Progres, sumber XP, dan zona yang terbuka.</p></div><button id="closeAnalysis">✕</button></div><div id="analysisBody"></div></div>
 <div class="modal" id="helpModal"><div class="modalhead"><div><h2>❓ Bantuan</h2><p>Kontrol Growmax.</p></div><button id="closeHelp">✕</button></div>
  <div style="font-size:13px;line-height:2">
- <b>WASD / ←→</b> jalan · <b>SPACE</b> lompat<br>
- <b>Klik kiri</b> — punch: garap rumput / panen tanaman<br>
- <b>E</b> tanam seed yang dipilih · <b>Q</b> siram (+25% gem)<br>
- <b>1–9</b> pilih slot hotbar · <b>B</b> toko · <b>I</b> ransel<br>
- <b>F</b> mode demo 60× (uji cepat pertumbuhan)
+ <b>WASD / ←→</b> jalan · <b>SPACE</b> lompat (bisa naik ke blok)<br>
+ <b>Klik kiri</b> — punch: garap rumput / panen / hancurkan blok<br>
+ <b>E</b> — tanam seed / <b>pasang blok</b> yang dipilih<br>
+ <b>Q</b> siram (+25% gem) · <b>1–9</b> pilih hotbar<br>
+ <b>P</b> pindah world · <b>B</b> toko · <b>I</b> ransel · <b>F</b> demo 60×<br>
+ 🏠 <b>Bangun rumah:</b> pilih blok (🟫🟥⬜) di hotbar, arahkan crosshair, tekan E. Bisa bertingkat & kamu bisa berdiri di atasnya!
  </div></div>
 
 <script type="module">
@@ -75,7 +82,7 @@ const RARITY_TIERS=[
  {id:'mythic',   name:'Mistis',     min:81,max:100,color:'#fb7185'}
 ];
 const tierOf=r=>RARITY_TIERS.find(t=>r>=t.min&&r<=t.max)||RARITY_TIERS[0];
-// ============ KATALOG SEED (nama Indonesia) ============
+// ============ KATALOG SEED ============
 const SEEDS=[
  {id:'door',     name:'Pohon Pintu',   emoji:'🚪',rarity:2, time:300,  gems:[3,8],     seeds:[1,2], price:5,   color:0x6dba4b},
  {id:'grass',    name:'Pohon Rumput',  emoji:'🌾',rarity:5, time:420,  gems:[4,10],    seeds:[1,2], price:8,   color:0x86c05a},
@@ -92,72 +99,147 @@ const SEEDS=[
  {id:'naga',    name:'Pohon Naga',    emoji:'🐉',rarity:88,time:86400,gems:[800,2000],seeds:[6,10],price:2500,color:0xd05a5a}
 ];
 const seedById=id=>SEEDS.find(s=>s.id===id)||SEEDS[0];
-const ZONES=[
- {name:'Permukaan',  lv:1},{name:'Bawah Tanah',lv:6},{name:'Gua',lv:11},
- {name:'Gua Dalam',  lv:21},{name:'Magma',    lv:31}
+// ============ BLOK BANGUNAN ============
+const BLOCKS=[
+ {id:'wood', name:'Blok Kayu',  emoji:'🟫',color:0x9a693a,price:8},
+ {id:'brick',name:'Blok Bata',  emoji:'🟥',color:0xb5563f,price:15},
+ {id:'stone',name:'Blok Batu',  emoji:'⬜',color:0x8a8f8f,price:12},
+ {id:'sand', name:'Blok Pasir', emoji:'🟨',color:0xd9c27e,price:6},
+ {id:'glass',name:'Blok Kaca',  emoji:'🔷',color:0xaad4e0,price:20,glass:true}
 ];
+const blockById=id=>BLOCKS.find(b=>b.id===id)||BLOCKS[0];
+const ZONES=[{name:'Permukaan',lv:1},{name:'Bawah Tanah',lv:6},{name:'Gua',lv:11},{name:'Gua Dalam',lv:21},{name:'Magma',lv:31}];
 // ============ STATE (kompatibel save lama) ============
-const DEFAULTS={gems:20,level:1,xp:0,xpTotal:0,harvests:0,planted:0,gemsEarned:0,selected:0,inventory:{door:1},xpLog:[],tiles:{},player:{x:12,z:15}};
+const DEFAULTS={gems:20,level:1,xp:0,xpTotal:0,harvests:0,planted:0,gemsEarned:0,selected:0,
+ inventory:{door:1},blockInv:{wood:60,brick:30,stone:40,sand:20,glass:20},
+ xpLog:[],world:'starter',worlds:{starter:{tiles:{},player:{x:12,z:15},created:Date.now()}},tiles:{}};
 let loaded=null;try{loaded=JSON.parse(localStorage.getItem(SAVE_KEY))}catch{}
 const state=Object.assign({},DEFAULTS,loaded||{});
 state.inventory=Object.assign({},DEFAULTS.inventory,(loaded&&loaded.inventory)||{});
-state.xpLog=(loaded&&loaded.xpLog)||[];state.tiles=loaded&&loaded.tiles||{};
-if(!SEEDS.every(s=>s.id in state.inventory))SEEDS.forEach(s=>{if(!(s.id in state.inventory))state.inventory[s.id]=0});
-let accelerated=false,toastTimer=0,move={forward:false,back:false,left:false,right:false},jumping=false,velocityY=0,storeFilter='all',invTab='seeds';
+state.blockInv=Object.assign({},DEFAULTS.blockInv,(loaded&&loaded.blockInv)||{});
+state.xpLog=(loaded&&loaded.xpLog)||[];
+state.worlds=(loaded&&loaded.worlds)||{};
+if(loaded&&loaded.tiles&&!Object.keys(state.worlds).length){ // migrasi save lama -> world starter
+ state.worlds.starter={tiles:loaded.tiles,player:loaded.player||{x:12,z:15},created:Date.now()}}
+if(!state.worlds.starter)state.worlds.starter={tiles:{},player:{x:12,z:15},created:Date.now()};
+state.world=state.world||'starter';
+state.worlds[state.world]=state.worlds[state.world]||{tiles:{},player:{x:12,z:15},created:Date.now()};
+state.tiles=state.worlds[state.world].tiles; // referensi hidup
+SEEDS.forEach(s=>{if(!(s.id in state.inventory))state.inventory[s.id]=0});
+BLOCKS.forEach(b=>{if(!(b.id in state.blockInv))state.blockInv[b.id]=0});
+let accelerated=false,toastTimer=0,move={forward:false,back:false,left:false,right:false},jumping=false,velocityY=0,storeFilter='all',invTab='seeds',lastPointer={x:innerWidth/2,y:innerHeight/2};
 const $=id=>document.getElementById(id),scene=new THREE.Scene();scene.background=new THREE.Color(0x8dc6ee);scene.fog=new THREE.Fog(0x8dc6ee,30,65);
 const camera=new THREE.PerspectiveCamera(62,innerWidth/innerHeight,.1,120);
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;$('game').appendChild(renderer.domElement);
 scene.add(new THREE.HemisphereLight(0xdaf1ff,0x647b47,2.0));
 const sun=new THREE.DirectionalLight(0xfff0d0,2.3);sun.position.set(-18,30,16);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-25;sun.shadow.camera.right=25;sun.shadow.camera.top=25;sun.shadow.camera.bottom=-25;scene.add(sun);
 const mat=(color,roughness=1)=>new THREE.MeshStandardMaterial({color,roughness});
-const mats={grass:mat(0x67ad45),grassTop:mat(0x7fc653),dirt:mat(0x8b633c),soil:mat(0x68472e),stone:mat(0x777c7c),bedrock:mat(0x30363a),wood:mat(0x9a693a),leaf:mat(0x398d46),sand:mat(0xd9c27e)};
+const glassMat=color=>new THREE.MeshStandardMaterial({color,roughness:.1,transparent:true,opacity:.55});
+const mats={dirt:mat(0x8b633c),soil:mat(0x68472e),stone:mat(0x777c7c),bedrock:mat(0x30363a),wood:mat(0x9a693a),sand:mat(0xd9c27e)};
+const blockMats={};BLOCKS.forEach(b=>blockMats[b.id]=b.glass?glassMat(b.color):mat(b.color));
 const geo=new THREE.BoxGeometry(1,1,1),world=new THREE.Group();scene.add(world);
-const groundMeshes=[],tileObjects=new Map(),plants=new Map(),raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
+const groundMeshes=[],blockMeshes=[],tileObjects=new Map(),plants=new Map(),raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
 const key=(x,z)=>x+','+z;
 function cube(parent,x,y,z,material,sx=1,sy=1,sz=1){const m=new THREE.Mesh(geo,material);m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m}
-function buildWorld(){
+// ============ SEEDED RNG — world generation unik per kata kunci ============
+function hashSeed(str){let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+// ============ BUILD WORLD ============
+let grassTopMat=mat(0x7fc653);
+function clearWorldMeshes(){while(world.children.length)world.remove(world.children[0]);groundMeshes.length=0;blockMeshes.length=0;tileObjects.clear();plants.clear()}
+function buildWorld(name){
+ clearWorldMeshes();
+ const rng=mulberry32(hashSeed(name.toLowerCase()));
+ // biome: warna rumput & dedaunan unik dari seed
+ const palettes=[[0x7fc653,0x398d46],[0x6db84a,0x2e7d3a],[0x8fcf5e,0x4a9e4f],[0x5fae4d,0x2a8040],[0xa8d06a,0x55a54a],[0x74c96b,0x378a52]];
+ const pal=palettes[Math.floor(rng()*palettes.length)];
+ grassTopMat=mat(pal[0]);
  for(let x=0;x<24;x++)for(let z=0;z<24;z++){
-  const beach=x<2||z<2||x>21||z>21,base=beach?mats.sand:mats.grassTop;
-  cube(world,x,-.5,z,mats.bedrock);cube(world,x,.5,z,mats.stone);cube(world,x,1.5,z,mats.dirt);cube(world,x,2.5,z,mats.dirt);const top=cube(world,x,3.5,z,base);top.userData={x,z,type:beach?'sand':'grass'};groundMeshes.push(top);tileObjects.set(key(x,z),{x,z,top,type:beach?'sand':'grass'});
+  const beach=x<2||z<2||x>21||z>21;
+  cube(world,x,-.5,z,mats.bedrock);cube(world,x,.5,z,mats.stone);cube(world,x,1.5,z,mats.dirt);cube(world,x,2.5,z,mats.dirt);
+  const top=cube(world,x,3.5,z,beach?mats.sand:grassTopMat);
+  top.userData={x,z};groundMeshes.push(top);
+  tileObjects.set(key(x,z),{x,z,top,type:beach?'sand':'grass',stack:[],stackMeshes:[]});
  }
- for(let i=0;i<17;i++){const x=2+Math.floor(Math.random()*20),z=2+Math.floor(Math.random()*20);if((x>8&&x<16&&z>8&&z<19)||tileObjects.get(key(x,z)).type!=='grass')continue;makeTree(x,4,z,0x398d46,.72)}
- for(let i=0;i<5;i++){const x=4+i*4,z=4+(i%2)*3;cube(world,x,4,z,mats.stone,.8,.7,.8)}
- for(let i=0;i<3;i++){const x=3+i*8,z=3+i*2;for(let a=0;a<4;a++)for(let b=0;b<4;b++)cube(world,x+a,10,z+b,mats.dirt);for(let a=0;a<4;a++)cube(world,x+a,10.55,z,mats.grassTop)}
+ // kolam (seeded)
+ if(rng()>.25){const px=4+Math.floor(rng()*16),pz=4+Math.floor(rng()*16),pr=1+Math.floor(rng()*2);
+  for(let dx=-pr;dx<=pr;dx++)for(let dz=-pr;dz<=pr;dz++){if(Math.abs(dx)+Math.abs(dz)>pr)continue;const x=px+dx,z=pz+dz;
+   if(x<0||x>23||z<0||z>23)continue;const t=tileObjects.get(key(x,z));if(t.type!=='grass')continue;
+   t.type='water';t.top.material=glassMat(0x3dadd4)}}
+ // pohon dekor (seeded)
+ const treeCount=9+Math.floor(rng()*12);
+ for(let i=0;i<treeCount;i++){const x=2+Math.floor(rng()*20),z=2+Math.floor(rng()*20);
+  const t=tileObjects.get(key(x,z));if(!t||t.type!=='grass')continue;if(x>8&&x<16&&z>8&&z<19)continue;
+  makeTree(x,4,z,pal[1],.68+rng()*.4)}
+ // batu (seeded)
+ const rockCount=3+Math.floor(rng()*5);
+ for(let i=0;i<rockCount;i++){const x=3+Math.floor(rng()*18),z=3+Math.floor(rng()*18);
+  if(tileObjects.get(key(x,z)).type!=='grass')continue;cube(world,x,4.15,z,mats.stone,.8,.35+rng()*.5,.8)}
+ // pulau melayang (seeded)
+ const islCount=1+Math.floor(rng()*3);
+ for(let i=0;i<islCount;i++){const x=3+Math.floor(rng()*15),z=2+Math.floor(rng()*15),y=9+Math.floor(rng()*2);
+  for(let a=0;a<3;a++)for(let b=0;b<3;b++)cube(world,x+a,y,z+b,mats.dirt);
+  for(let a=0;a<3;a++)cube(world,x+a,y+.55,z,mats.grassTop)}
 }
 function makeTree(x,y,z,color=0x398d46,scale=1){const g=new THREE.Group();g.position.set(x,y,z);world.add(g);cube(g,0,1*scale,0,mats.wood,.38*scale,2*scale,.38*scale);const leaf=mat(color);cube(g,0,2.35*scale,0,leaf,1.5*scale,1.1*scale,1.5*scale);cube(g,-.45*scale,2.85*scale,0,leaf,.85*scale,.8*scale,.85*scale);cube(g,.45*scale,2.85*scale,.1,leaf,.8*scale,.8*scale,.8*scale);return g}
-buildWorld();
-const player=new THREE.Group();scene.add(player);player.position.set(state.player?.x||12,4,state.player?.z||15);
+buildWorld(state.world);
+const player=new THREE.Group();scene.add(player);
+player.position.set((state.worlds[state.world].player&&state.worlds[state.world].player.x)||12,4,((state.worlds[state.world].player&&state.worlds[state.world].player.z)||15));
 const body=cube(player,0,1,0,mat(0x368de0),.65,.95,.42),head=cube(player,0,1.72,0,mat(0xffc98a),.52,.52,.52);cube(player,-.14,1.78,.27,mat(0x262a2e),.07,.07,.025);cube(player,.14,1.78,.27,mat(0x262a2e),.07,.07,.025);
 const cameraOffset=new THREE.Vector3(0,7.4,9.5);camera.position.copy(player.position).add(cameraOffset);camera.lookAt(player.position.clone().add(new THREE.Vector3(0,1,0)));
 const clock=new THREE.Clock();
-function addPlant(x,z,id,plantedAt=Date.now(),watered=0){const seed=seedById(id),g=new THREE.Group();g.position.set(x,4,z);world.add(g);const trunk=cube(g,0,.55,0,mats.wood,.22,1.1,.22),crown=cube(g,0,1.35,0,mat(seed.color),.9,.9,.9);crown.scale.setScalar(.25);const p={x,z,id,plantedAt,wateredAt:watered||0,group:g,crown,trunk};plants.set(key(x,z),p);state.tiles[key(x,z)]={type:'plant',id,plantedAt,watered:p.wateredAt};return p}
-function syncPlants(){for(const [k,v] of Object.entries(state.tiles||{})){const [x,z]=k.split(',').map(Number);const tile=tileObjects.get(k);if(!tile)continue;if(v.type==='soil')setSoil(x,z);if(v.type==='plant')addPlant(x,z,v.id,v.plantedAt,v.watered||0)}}
-function setSoil(x,z){const tile=tileObjects.get(key(x,z));if(!tile)return;tile.type='soil';tile.top.material=mats.soil;state.tiles[key(x,z)]={type:'soil'}}
-function removePlant(p){world.remove(p.group);plants.delete(key(p.x,p.z));delete state.tiles[key(p.x,p.z)]}
-syncPlants();
+// ============ TILES: soil / plant / stack blok ============
+function addPlant(x,z,id,plantedAt=Date.now(),watered=0){const seed=seedById(id),g=new THREE.Group();g.position.set(x,4,z);world.add(g);const trunk=cube(g,0,.55,0,mats.wood,.22,1.1,.22),crown=cube(g,0,1.35,0,mat(seed.color),.9,.9,.9);crown.scale.setScalar(.25);const p={x,z,id,plantedAt,wateredAt:watered||0,group:g,crown,trunk};plants.set(key(x,z),p);state.tiles[key(x,z)]=Object.assign({type:'plant',id,plantedAt,watered:p.wateredAt},state.tiles[key(x,z)]||{});return p}
+function setSoil(x,z){const tile=tileObjects.get(key(x,z));if(!tile)return;tile.type='soil';tile.top.material=mats.soil;state.tiles[key(x,z)]=Object.assign({type:'soil'},state.tiles[key(x,z)]||{})}
+function removePlant(p){world.remove(p.group);plants.delete(key(p.x,p.z));if(state.tiles[key(p.x,p.z)]&&state.tiles[key(p.x,p.z)].type==='plant')delete state.tiles[key(p.x,p.z)]}
+function stackY(t){return 4+t.stack.length}
+function placeBlockMesh(t,idx,blockId){const b=blockById(blockId);const m=cube(world,t.x,4.5+idx,t.z,blockMats[blockId]);m.userData={x:t.x,z:t.z,blockIdx:idx};blockMeshes.push(m);t.stackMeshes.push(m);return m}
+function syncTiles(){for(const [k,v] of Object.entries(state.tiles||{})){const [x,z]=k.split(',').map(Number);const tile=tileObjects.get(k);if(!tile)continue;
+ if(v.type==='soil')setSoil(x,z);
+ if(v.type==='plant')addPlant(x,z,v.id,v.plantedAt,v.watered||0);
+ if(v.type==='water'){tile.type='water';tile.top.material=glassMat(0x3dadd4)}
+ if(v.stack&&v.stack.length){tile.stack=v.stack.slice();v.stack.forEach((bid,i)=>placeBlockMesh(tile,i,bid))}}}
+syncTiles();
 // ============ UI DASAR ============
-function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2400)}
-function save(){state.player={x:player.position.x,z:player.position.z};localStorage.setItem(SAVE_KEY,JSON.stringify(state))}
+function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2600)}
+function save(){const wd=state.worlds[state.world];wd.tiles=state.tiles;wd.player={x:player.position.x,z:player.position.z};localStorage.setItem(SAVE_KEY,JSON.stringify(state))}
 function addXp(n,source){state.xp+=n;state.xpTotal+=n;state.xpLog.unshift('+'+Math.round(n)+' XP — '+source);if(state.xpLog.length>25)state.xpLog.length=25;let leveled=false;while(state.xp>=state.level*100){state.xp-=state.level*100;state.level++;leveled=true}if(leveled){const z=ZONES.find(zn=>zn.lv===state.level);toast('⬆️ Level '+state.level+'!'+(z?' Zona "'+z.name+'" terbuka!':''))}refresh()}
 function tierBadge(r){const t=tierOf(r);return '<span class="rbadge" style="color:'+t.color+';border-color:'+t.color+'66;background:'+t.color+'18">'+t.name+' · '+r+'</span>'}
 function fmtGrow(sec){const m=sec/60;return m<60?Math.round(m)+' mnt':m<1440?Math.round(m/60)+' jam':Math.round(m/1440)+' hari'}
+const HOTBAR=SEEDS.map(s=>({kind:'seed',ref:s})).concat(BLOCKS.map(b=>({kind:'block',ref:b})));
+function selectItem(i){state.selected=i;refresh()}
+function selectedItem(){return HOTBAR[state.selected]}
 // ============ HUD ============
 function refresh(){
  $('gems').textContent=state.gems;$('level').textContent=state.level;$('harvests').textContent=state.harvests;
  $('xpfill').style.width=Math.min(100,Math.round(state.xp/(state.level*100)*100))+'%';
+ $('worldname').textContent='WORLD: '+state.world.toUpperCase();
  const bar=$('hotbar');bar.innerHTML='';
- SEEDS.forEach((s,i)=>{const b=document.createElement('button');const t=tierOf(s.rarity);
-  b.className='slot'+(state.selected===i?' active':'');
-  b.innerHTML='<span class="rare" style="background:'+t.color+'"></span><span>'+s.emoji+'</span><small>'+s.name.replace('Pohon ','')+'</small><em>'+((state.inventory[s.id]||0))+'</em>';
-  b.title=s.name+' · '+t.name+' ('+s.rarity+')';
-  b.onclick=()=>{state.selected=i;refresh()};bar.appendChild(b)});
-}
-function selectedSeed(){return SEEDS[state.selected]}
+ HOTBAR.forEach((it,i)=>{const b=document.createElement('button');b.className='slot'+(state.selected===i?' active':'');
+  if(it.kind==='seed'){const s=it.ref,t=tierOf(s.rarity);
+   b.innerHTML='<span class="rare" style="background:'+t.color+'"></span><span>'+s.emoji+'</span><small>'+s.name.replace('Pohon ','')+'</small><em>'+((state.inventory[s.id]||0))+'</em>';
+   b.title=s.name+' · '+t.name+' ('+s.rarity+')';}
+  else{const bl=it.ref;
+   b.innerHTML='<span>'+bl.emoji+'</span><small>'+bl.name.replace('Blok ','')+'</small><em>'+((state.blockInv[bl.id]||0))+'</em>';
+   b.title=bl.name+' — E untuk pasang';}
+  b.onclick=()=>selectItem(i);bar.appendChild(b)})}
 function growth(p){const s=seedById(p.id),mult=accelerated?60:1;return Math.max(0,(s.time*1000-(Date.now()-p.plantedAt)*mult))}
 function updatePlants(){for(const p of plants.values()){const s=seedById(p.id),left=growth(p),progress=1-left/(s.time*1000);const scale=.25+Math.min(1,progress)*.75;p.crown.scale.set(scale,scale,scale);p.crown.position.y=1.2+progress*.45;if(left<=0&&p.crown.userData.ready!==1){p.crown.material=mat(s.color).clone();p.crown.material.emissive=new THREE.Color(s.color);p.crown.material.emissiveIntensity=.35;p.crown.userData.ready=1}}}
-function getTileFromEvent(e){pointer.x=(e.clientX/innerWidth)*2-1;pointer.y=-(e.clientY/innerHeight)*2+1;raycaster.setFromCamera(pointer,camera);const hits=raycaster.intersectObjects(groundMeshes,false);if(!hits.length)return null;return hits[0].object.userData}
-// ============ PUNCH: panen / garap ============
-function performPunch(tile){if(!tile)return;const k=key(tile.x,tile.z),p=plants.get(k);
+function raycastTile(cx,cy){pointer.x=(cx/innerWidth)*2-1;pointer.y=-(cy/innerHeight)*2+1;raycaster.setFromCamera(pointer,camera);const hits=raycaster.intersectObjects(groundMeshes.concat(blockMeshes),false);return hits.length?hits[0].object.userData:null}
+addEventListener('pointermove',e=>{lastPointer={x:e.clientX,y:e.clientY}});
+function aimTile(){return raycastTile(lastPointer.x,lastPointer.y)||(()=>{const dir=new THREE.Vector3(Math.sin(player.rotation.y),0,Math.cos(player.rotation.y)).normalize();const pos=player.position.clone().add(dir.multiplyScalar(1.6));return {x:Math.floor(pos.x),z:Math.floor(pos.z)}})()}
+// ============ PUNCH: panen / hancurkan blok / garap ============
+function performPunch(hit){
+ if(!hit)return;const {x,z,blockIdx}=hit;
+ if(blockIdx!==undefined){ // pukul blok bangunan
+  const t=tileObjects.get(key(x,z));if(!t||!t.stack.length)return;
+  const topIdx=t.stack.length-1,bid=t.stack[topIdx];
+  world.remove(t.stackMeshes[topIdx]);t.stackMeshes.splice(topIdx,1);t.stack.splice(topIdx,1);
+  for(let i=0;i<blockMeshes.length;i++)if(blockMeshes[i].userData.x===x&&blockMeshes[i].userData.z===z&&blockMeshes[i].userData.blockIdx===topIdx){blockMeshes.splice(i,1);break}
+  state.blockInv[bid]=(state.blockInv[bid]||0)+1;addXp(1,'Menghancurkan '+blockById(bid).name);
+  if(!t.stack.length)delete state.tiles[key(x,z)].stack;else state.tiles[key(x,z)].stack=t.stack.slice();
+  refresh();save();toast('🧱 '+blockById(bid).name+' diambil kembali (+1)');return}
+ const k=key(x,z),p=plants.get(k);
  if(p){if(growth(p)>0){toast(seedById(p.id).name+' belum matang — sisa '+fmtGrow(growth(p)/1000)+'. Tekan F untuk demo 60×.');return}
   const s=seedById(p.id),lvlBonus=1+(state.level-1)*0.03,wet=p.wateredAt>0;
   const gem=Math.round((s.gems[0]+Math.floor(Math.random()*(s.gems[1]-s.gems[0]+1)))*lvlBonus*(wet?1.25:1));
@@ -166,78 +248,133 @@ function performPunch(tile){if(!tile)return;const k=key(tile.x,tile.z),p=plants.
   addXp(gem*.25+5,'Panen '+s.name+(wet?' (💧 +25%)':''));
   removePlant(p);toast('🎉 Panen '+s.name+'! +'+gem+' 💎'+(wet?' (💧 disiram)':'')+' · +'+seed+' seed');refresh();save();return}
  const t=tileObjects.get(k);if(!t)return;
- if(t.type==='grass'){setSoil(tile.x,tile.z);addXp(2,'Menggarap tanah');toast('Tanah digarap 🟤 — pilih seed lalu tekan E untuk menanam.');save()}
- else if(t.type==='sand')toast('Pasir pantai tidak bisa digarap.');
+ if(t.type==='grass'){setSoil(x,z);addXp(2,'Menggarap tanah');toast('Tanah digarap 🟤 — pilih seed lalu tekan E untuk menanam.');save()}
+ else if(t.type==='sand')toast('Pasir pantai tidak bisa digarap. (Bisa dipasangi blok!)');
+ else if(t.type==='water')toast('Kolam air. Bisa ditimbun dengan blok!');
  else if(t.type==='soil')toast('Petak sudah digarap — tekan E untuk menanam.');}
-function interact(){const tile=targetTile();if(!tile)return;const t=tileObjects.get(key(tile.x,tile.z));if(!t)return;if(t.type!=='soil'){toast('Garap rumput dulu dengan klik kiri.');return}const s=selectedSeed();if((state.inventory[s.id]||0)<1){toast('Seed '+s.name+' habis. Beli di toko [B].');return}if(plants.has(key(tile.x,tile.z))){toast('Petak sudah ditanami.');return}state.inventory[s.id]--;state.planted++;addPlant(tile.x,tile.z,s.id);refresh();save();toast(s.name+' ditanam! Tumbuh '+fmtGrow(s.time)+' — tetap jalan saat offline.')}
-function targetTile(){const dir=new THREE.Vector3(Math.sin(player.rotation.y),0,Math.cos(player.rotation.y)).normalize();const pos=player.position.clone().add(dir.multiplyScalar(1.6));return {x:Math.floor(pos.x),z:Math.floor(pos.z)}}
-function water(){const t=targetTile(),p=plants.get(key(t.x,t.z));if(!p){toast('Tidak ada tanaman di depanmu.');return}p.wateredAt=Date.now();state.tiles[key(p.x,p.z)].watered=p.wateredAt;save();toast('💧 '+seedById(p.id).name+' disiram — panen mendapat +25% gem!')}
-// ============ TOKO (filter rarity) ============
+// ============ E: tanam seed / pasang blok ============
+function interact(){const hit=aimTile();if(!hit)return;const {x,z}=hit;const it=selectedItem();
+ if(it.kind==='seed'){const t=tileObjects.get(key(x,z));if(!t)return;
+  if(t.type!=='soil'){toast('Garap rumput dulu (klik kiri), lalu tekan E di tanah garap.');return}
+  const s=it.ref;if((state.inventory[s.id]||0)<1){toast('Seed '+s.name+' habis. Beli di toko [B].');return}
+  if(plants.has(key(x,z))){toast('Petak sudah ditanami.');return}
+  state.inventory[s.id]--;state.planted++;addPlant(x,z,s.id);refresh();save();toast(s.name+' ditanam! Tumbuh '+fmtGrow(s.time)+' — tetap jalan saat offline.')}
+ else{const b=it.ref;const t=tileObjects.get(key(x,z));if(!t)return;
+  if(plants.has(key(x,z))){toast('Petak ada tanamannya — panen dulu sebelum membangun.');return}
+  if(t.stack.length>=6){toast('Maksimal 6 blok per petak.');return}
+  if((state.blockInv[b.id]||0)<1){toast(b.name+' habis. Beli di toko [B].');return}
+  state.blockInv[b.id]--;t.stack.push(b.id);placeBlockMesh(t,t.stack.length-1,b.id);
+  const st=state.tiles[key(x,z)]||{type:t.type};st.stack=t.stack.slice();state.tiles[key(x,z)]=st;
+  refresh();save();toast(b.name+' dipasang 🧱 — bisa ditumpuk & berdiri di atasnya!')}}
+function water(){const hit=aimTile();if(!hit)return;const p=plants.get(key(hit.x,hit.z));if(!p){toast('Tidak ada tanaman di depanmu.');return}p.wateredAt=Date.now();if(state.tiles[key(p.x,p.z)])state.tiles[key(p.x,p.z)].watered=p.wateredAt;save();toast('💧 '+seedById(p.id).name+' disiram — panen mendapat +25% gem!')}
+// ============ TOKO ============
 function openStore(){renderFilter($('storeFilter'),['all'].concat(RARITY_TIERS.map(t=>t.id)),storeFilter,id=>{storeFilter=id;openStore()});
  const root=$('storeItems');root.innerHTML='';
  SEEDS.filter(s=>storeFilter==='all'||tierOf(s.rarity).id===storeFilter).forEach(s=>{
-  const row=document.createElement('div');row.className='shoprow';const t=tierOf(s.rarity);
+  const row=document.createElement('div');row.className='shoprow';
   const info=document.createElement('div');
   info.innerHTML='<b>'+s.emoji+' '+s.name+'</b> '+tierBadge(s.rarity)+'<small>Tumbuh '+fmtGrow(s.time)+' · reward 💎'+s.gems[0]+'–'+s.gems[1]+' · seed kembali '+s.seeds[0]+'–'+s.seeds[1]+'</small>';
   const btn=document.createElement('button');btn.textContent='💎 '+s.price;btn.disabled=state.gems<s.price;
   if(state.gems<s.price)btn.style.opacity=.45;
-  btn.onclick=()=>{if(state.gems<s.price){toast('💎 tidak cukup — butuh '+s.price+', punya '+state.gems+'.');return}state.gems-=s.price;state.inventory[s.id]=(state.inventory[s.id]||0)+1;refresh();openStore();save();toast(s.name+' dibeli! ('+t.name+')')};
+  btn.onclick=()=>{if(state.gems<s.price){toast('💎 tidak cukup — butuh '+s.price+', punya '+state.gems+'.');return}state.gems-=s.price;state.inventory[s.id]=(state.inventory[s.id]||0)+1;refresh();openStore();save();toast(s.name+' dibeli! ('+tierOf(s.rarity).name+')')};
   row.append(info,btn);root.append(row)});
+ const br=$('storeBlocks');br.innerHTML='';
+ BLOCKS.forEach(b=>{const row=document.createElement('div');row.className='shoprow';
+  const info=document.createElement('div');info.innerHTML='<b>'+b.emoji+' '+b.name+'</b><small>Bahan bangunan — pasang dengan E. Punya: '+(state.blockInv[b.id]||0)+'</small>';
+  const btn=document.createElement('button');btn.textContent='💎 '+b.price;btn.disabled=state.gems<b.price;if(state.gems<b.price)btn.style.opacity=.45;
+  btn.onclick=()=>{if(state.gems<b.price){toast('💎 tidak cukup.');return}state.gems-=b.price;state.blockInv[b.id]=(state.blockInv[b.id]||0)+1;refresh();openStore();save();toast(b.name+' dibeli!')};
+  row.append(info,btn);br.append(row)});
  $('store').classList.add('open')}
 function renderFilter(el,ids,active,cb){el.innerHTML='';const names={all:'Semua'};RARITY_TIERS.forEach(t=>names[t.id]=t.name);
  ids.forEach(id=>{const b=document.createElement('button');b.textContent=names[id]||id;if(id!=='all'){const t=RARITY_TIERS.find(t=>t.id===id);if(t)b.style.cssText='color:'+t.color};if(active===id)b.classList.add('on');b.onclick=()=>cb(id);el.append(b)})}
-// ============ RANSEL / INVENTORY ============
+// ============ RANSEL ============
 function openInventory(){
- renderFilter($('invTabs'),['seeds','tools','stats'],invTab,id=>{invTab=id;openInventory()});
- const names={seeds:'🌱 Benih',tools:'🛠️ Alat',stats:'📊 Statistik'};
- [...$('invTabs').children].forEach((b,i)=>b.textContent=names[['seeds','tools','stats'][i]]);
+ renderFilter($('invTabs'),['seeds','blocks','tools','stats'],invTab,id=>{invTab=id;openInventory()});
+ const names={seeds:'🌱 Benih',blocks:'🧱 Blok',tools:'🛠️ Alat',stats:'📊 Statistik'};
+ [...$('invTabs').children].forEach((b,i)=>b.textContent=names[['seeds','blocks','tools','stats'][i]]);
  const root=$('invItems');root.innerHTML='';
- const totalSeeds=SEEDS.reduce((a,s)=>a+(state.inventory[s.id]||0),0);
- $('invSummary').textContent='💎 '+state.gems+' gems · '+totalSeeds+' seed · '+state.harvests+' panen';
+ const totalSeeds=SEEDS.reduce((a,s)=>a+(state.inventory[s.id]||0),0),totalBlocks=BLOCKS.reduce((a,b)=>a+(state.blockInv[b.id]||0),0);
+ $('invSummary').textContent='💎 '+state.gems+' gems · '+totalSeeds+' seed · '+totalBlocks+' blok · '+state.harvests+' panen';
  if(invTab==='seeds'){
   const owned=SEEDS.filter(s=>(state.inventory[s.id]||0)>0);
-  if(!owned.length){root.innerHTML='<p>Kamu belum punya seed. Panen atau beli di toko [B].</p>'}
-  owned.forEach(s=>{const card=document.createElement('div');card.className='invcard';const t=tierOf(s.rarity);
+  if(!owned.length)root.innerHTML='<p>Kamu belum punya seed. Panen atau beli di toko [B].</p>'
+  owned.forEach(s=>{const card=document.createElement('div');card.className='invcard';
    const info=document.createElement('div');info.className='ic';info.textContent=s.emoji;
    const mid=document.createElement('div');
    mid.innerHTML='<b>'+s.name+'</b> '+tierBadge(s.rarity)+' ×'+(state.inventory[s.id]||0)+'<small>Tumbuh '+fmtGrow(s.time)+' · reward 💎'+s.gems[0]+'–'+s.gems[1]+' · jual ↔ 💎'+Math.floor(s.price/2)+'</small>';
    const acts=document.createElement('div');acts.className='acts';
-   const useBtn=document.createElement('button');useBtn.textContent='Pakai';useBtn.onclick=()=>{state.selected=SEEDS.indexOf(s);refresh();toast(s.name+' dipilih — tekan E di tanah garap.')};
+   const useBtn=document.createElement('button');useBtn.textContent='Pakai';useBtn.onclick=()=>{selectItem(SEEDS.indexOf(s));toast(s.name+' dipilih — tekan E di tanah garap.')};
    const sellBtn=document.createElement('button');sellBtn.textContent='Jual 💎'+Math.floor(s.price/2);
    sellBtn.onclick=()=>{state.inventory[s.id]--;state.gems+=Math.floor(s.price/2);refresh();openInventory();save();toast('Terjual! +💎'+Math.floor(s.price/2))};
-   acts.append(useBtn,sellBtn);card.append(info,mid,acts);root.append(card)})
- }
+   acts.append(useBtn,sellBtn);card.append(info,mid,acts);root.append(card)})}
+ if(invTab==='blocks'){
+  BLOCKS.forEach(b=>{const card=document.createElement('div');card.className='invcard';
+   const info=document.createElement('div');info.className='ic';info.textContent=b.emoji;
+   const mid=document.createElement('div');
+   mid.innerHTML='<b>'+b.name+'</b> ×'+(state.blockInv[b.id]||0)+'<small>Bahan bangunan (maks 6 tingkat/petak) · jual ↔ 💎'+Math.floor(b.price/2)+'</small>';
+   const acts=document.createElement('div');acts.className='acts';
+   const useBtn=document.createElement('button');useBtn.textContent='Pakai';useBtn.onclick=()=>{selectItem(SEEDS.length+BLOCKS.indexOf(b));toast(b.name+' dipilih — arahkan crosshair, tekan E untuk memasang.')};
+   const sellBtn=document.createElement('button');sellBtn.textContent='Jual 💎'+Math.floor(b.price/2);
+   sellBtn.onclick=()=>{state.blockInv[b.id]--;state.gems+=Math.floor(b.price/2);refresh();openInventory();save();toast('Terjual! +💎'+Math.floor(b.price/2))};
+   acts.append(useBtn,sellBtn);card.append(info,mid,acts);root.append(card)})}
  if(invTab==='tools'){
   const tools=[
-   {emoji:'💧',name:'Kaleng Penyiram',desc:'Dimiliki — tekan Q di depan tanaman untuk menyiram. Tanaman yang disiram memberi +25% gem saat dipanen.'},
-   {emoji:'✊',name:'Tinju Dasar',desc:'Dimiliki — klik kiri untuk punch: garap rumput atau panen tanaman yang matang.'},
-   {emoji:'🔍',name:'Kaca Analisis',desc:'Dimiliki — klik tombol Analisis Level untuk melihat XP, sumber XP, dan zona yang terbuka.'}
+   {emoji:'✊',name:'Tinju Dasar',desc:'Klik kiri: garap rumput, panen tanaman, atau hancurkan blok (dikembalikan ke ransel).'},
+   {emoji:'💧',name:'Kaleng Penyiram',desc:'Tekan Q di depan tanaman untuk menyiram — +25% gem saat dipanen.'},
+   {emoji:'🧱',name:'Palu Bangun',desc:'Pilih blok di hotbar lalu tekan E untuk memasang. Bangun rumahmu sendiri!'}
   ];
   tools.forEach(t=>{const card=document.createElement('div');card.className='invcard';
    const info=document.createElement('div');info.className='ic';info.textContent=t.emoji;
    const mid=document.createElement('div');mid.innerHTML='<b>'+t.name+'</b> <span class="rbadge" style="color:#b5ef79;border-color:#b5ef7955;background:#b5ef7918">Dimiliki</span><small>'+t.desc+'</small>';
-   card.append(info,mid);root.append(card)})
- }
+   card.append(info,mid);root.append(card)})}
  if(invTab==='stats'){
+  const worldCount=Object.keys(state.worlds).length;
   root.innerHTML=
   '<div class="xpline">⭐ Level <b>'+state.level+'</b> — '+state.xp+'/'+(state.level*100)+' XP</div>'+
   '<div class="xpline">🌱 Ditanam: <b>'+state.planted+'</b> · 🌾 Dipanen: <b>'+state.harvests+'</b></div>'+
-  '<div class="xpline">💎 Gems sekarang: <b>'+state.gems+'</b> · total dikumpulkan: <b>'+state.gemsEarned+'</b></div>'+
-  '<div class="xpline">📈 Total XP: <b>'+Math.round(state.xpTotal)+'</b> · jenis seed ditemukan: <b>'+SEEDS.filter(s=>(state.inventory[s.id]||0)>0).length+'/'+SEEDS.length+'</b></div>';
- }
+  '<div class="xpline">💎 Gems: <b>'+state.gems+'</b> · total dikumpulkan: <b>'+state.gemsEarned+'</b></div>'+
+  '<div class="xpline">🌍 World dibuat/dikunjungi: <b>'+worldCount+'</b> · blok dimiliki: <b>'+BLOCKS.reduce((a,b)=>a+(state.blockInv[b.id]||0),0)+'</b></div>'+
+  '<div class="xpline">📈 Total XP: <b>'+Math.round(state.xpTotal)+'</b> · seed ditemukan: <b>'+SEEDS.filter(s=>(state.inventory[s.id]||0)>0).length+'/'+SEEDS.length+'</b></div>'}
  $('inventory').classList.add('open')}
-// ============ ANALISIS LEVEL (popup) ============
+// ============ ANALISIS LEVEL ============
 function openAnalysis(){
  const nextLvZones=ZONES.filter(z=>z.lv===state.level+1);
  let html='<div class="xpline" style="font-size:15px">⭐ LEVEL <b>'+state.level+'</b> — '+state.xp+' / '+(state.level*100)+' XP</div>'+
  '<div class="xpbar" style="height:10px;margin-top:6px"><i style="width:'+Math.min(100,Math.round(state.xp/(state.level*100)*100))+'%"></i></div>'+
  '<h4 style="margin:14px 0 4px">Sumber XP terakhir</h4>';
  const logs=state.xpLog.slice(0,8);
- html+=logs.length?logs.map(l=>'<div class="xpline">'+l+'</div>').join(''):'<p>Belum ada aktivitas. Garap tanah (+2 XP) atau panen (+XP gem).</p>';
+ html+=logs.length?logs.map(l=>'<div class="xpline">'+l+'</div>').join(''):'<p>Belum ada aktivitas. Garap tanah (+2 XP), hancurkan blok (+1), atau panen.</p>';
  html+='<h4 style="margin:14px 0 4px">Zona dunia</h4><div class="zonelist">'+
   ZONES.map(z=>'<div><span>'+z.name+'</span><span>'+(state.level>=z.lv?'✅ terbuka':'🔒 Lv'+z.lv)+'</span></div>').join('')+'</div>';
  if(nextLvZones.length)html+='<p style="margin-top:8px">Reward level berikutnya: buka zona <b>'+nextLvZones.map(z=>z.name).join(', ')+'</b></p>';
  $('analysisBody').innerHTML=html;$('analysis').classList.add('open')}
+// ============ PINDAH / BUAT WORLD ============
+function renderWorldList(){const el=$('worldList');el.innerHTML='';
+ const names=Object.keys(state.worlds).sort((a,b)=>a===state.world?-1:b===state.world?1:0);
+ if(!names.length){el.innerHTML='<small>Belum ada world lain.</small>';return}
+ names.forEach(n=>{const chip=document.createElement('span');
+  chip.className='worldchip';chip.textContent=(n===state.world?'📍 ':'')+n+(n===state.world?' (di sini)':'');
+  if(n===state.world)chip.style.borderColor='#b5ef79';
+  else chip.onclick=()=>{switchWorld(n)};
+  el.append(chip)})}
+function switchWorld(name){
+ name=(name||'').toLowerCase().trim();
+ if(!/^[a-z0-9-]{3,20}$/.test(name)){toast('Kata kunci world: 3-20 karakter, huruf kecil a-z, angka, atau "-".');return}
+ if(name===state.world){toast('Kamu sudah di world "'+name+'".');return}
+ const cur=state.worlds[state.world];cur.tiles=state.tiles;cur.player={x:player.position.x,z:player.position.z};
+ const isNew=!state.worlds[name];
+ state.worlds[name]=state.worlds[name]||{tiles:{},player:{x:12,z:15},created:Date.now()};
+ state.world=name;state.tiles=state.worlds[name].tiles;
+ buildWorld(name);syncTiles();
+ const wp=state.worlds[name].player||{x:12,z:15};
+ player.position.set(wp.x,6,wp.z);velocityY=0;
+ refresh();save();
+ $('worldModal').classList.remove('open');
+ toast(isNew?'🌍 World "'+name+'" dibuat! Terrain di-generate khusus dari kata kuncinya.':'🌍 Masuk world "'+name+'" — selamat datang kembali!')}
+function openWorldModal(){renderWorldList();$('worldInput').value='';$('worldModal').classList.add('open');setTimeout(()=>$('worldInput').focus(),50)}
+$('worldBtn').onclick=openWorldModal;$('closeWorld').onclick=()=>$('worldModal').classList.remove('open');
+$('goWorld').onclick=()=>switchWorld($('worldInput').value);
+$('worldInput').addEventListener('keydown',e=>{if(e.key==='Enter')switchWorld($('worldInput').value)});
 // ============ MENU ============
 function toggleMenu(on){$('menu').classList.toggle('open',on)}
 $('menuBtn').onclick=e=>{e.stopPropagation();toggleMenu(!$('menu').classList.contains('open'))};
@@ -245,21 +382,42 @@ addEventListener('click',e=>{if(!$('menu').contains(e.target)&&e.target.id!=='me
 $('mSave').onclick=()=>{save();toast('Progres disimpan di browser ini.');toggleMenu(false)};
 $('mDemo').onclick=()=>{accelerated=!accelerated;$('mDemo').textContent='⏩ Mode Demo 60×: '+(accelerated?'AKTIF':'MATI');toast(accelerated?'Mode demo 60× aktif':'Mode realtime aktif')};
 $('mHelp').onclick=()=>{$('helpModal').classList.add('open');toggleMenu(false)};
-$('mReset').onclick=()=>{if(confirm('Hapus semua progres? Ini tidak bisa dibatalkan.')){localStorage.removeItem(SAVE_KEY);location.reload()}};
+$('mReset').onclick=()=>{if(confirm('Hapus SEMUA progres (semua world)? Tidak bisa dibatalkan.')){localStorage.removeItem(SAVE_KEY);location.reload()}};
 $('storeBtn').onclick=openStore;$('closeStore').onclick=()=>$('store').classList.remove('open');
 $('invBtn').onclick=openInventory;$('closeInv').onclick=()=>$('inventory').classList.remove('open');
 $('analysisBtn').onclick=openAnalysis;$('closeAnalysis').onclick=()=>$('analysis').classList.remove('open');
 $('closeHelp').onclick=()=>$('helpModal').classList.remove('open');
 // ============ INPUT ============
 function onKey(e,down){const k=e.key.toLowerCase();if(['w','a','s','d',' ','arrowup','arrowdown','arrowleft','arrowright'].includes(k))e.preventDefault();if(k==='w'||k==='arrowup')move.forward=down;if(k==='s'||k==='arrowdown')move.back=down;if(k==='a'||k==='arrowleft')move.left=down;if(k==='d'||k==='arrowright')move.right=down;
- if(down&&!e.repeat){if(k===' ')jumping=true;if(k==='e')interact();if(k==='q')water();if(k==='b'){openStore()}if(k==='i'){$('inventory').classList.contains('open')?$('inventory').classList.remove('open'):openInventory()}if(k==='f'){accelerated=!accelerated;$('mDemo').textContent='⏩ Mode Demo 60×: '+(accelerated?'AKTIF':'MATI');toast(accelerated?'Mode demo 60× aktif':'Mode realtime aktif')}
- if(k>='1'&&k<='9'){const n=Number(k)-1;if(n<SEEDS.length){state.selected=n;refresh()}}}}
+ if(down&&!e.repeat){if(k===' ')jumping=true;if(k==='e')interact();if(k==='q')water();
+  if(k==='b'){const st=$('store');st.classList.contains('open')?st.classList.remove('open'):openStore()}
+  if(k==='p'){const wm=$('worldModal');wm.classList.contains('open')?wm.classList.remove('open'):openWorldModal()}
+  if(k==='i'){const im=$('inventory');im.classList.contains('open')?im.classList.remove('open'):openInventory()}
+  if(k==='f'){accelerated=!accelerated;$('mDemo').textContent='⏩ Mode Demo 60×: '+(accelerated?'AKTIF':'MATI');toast(accelerated?'Mode demo 60× aktif':'Mode realtime aktif')}
+  if(k>='1'&&k<='9'){const n=Number(k)-1;if(n<HOTBAR.length)selectItem(n)}}}
 addEventListener('keydown',e=>onKey(e,true));addEventListener('keyup',e=>onKey(e,false));
-renderer.domElement.addEventListener('pointerdown',e=>{if(document.querySelector('.modal.open'))return;const tile=getTileFromEvent(e);performPunch(tile)});
+renderer.domElement.addEventListener('pointerdown',e=>{if(document.querySelector('.modal.open'))return;lastPointer={x:e.clientX,y:e.clientY};performPunch(raycastTile(e.clientX,e.clientY))});
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
-function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.05);const direction=new THREE.Vector3((move.right?1:0)-(move.left?1:0),0,(move.back?1:0)-(move.forward?1:0));if(direction.lengthSq()>0){direction.normalize();player.position.addScaledVector(direction,5*dt);player.rotation.y=Math.atan2(direction.x,direction.z)}if(jumping&&player.position.y<=4.001){velocityY=7.5;jumping=false}velocityY-=20*dt;player.position.y=Math.max(4,player.position.y+velocityY*dt);if(player.position.y===4)velocityY=0;player.position.x=THREE.MathUtils.clamp(player.position.x,.5,23.5);player.position.z=THREE.MathUtils.clamp(player.position.z,.5,23.5);camera.position.lerp(player.position.clone().add(cameraOffset),Math.min(1,dt*4));camera.lookAt(player.position.clone().add(new THREE.Vector3(0,1,0)));updatePlants();renderer.render(scene,camera)}
+// ============ COLLISION & LOOP ============
+function groundY(x,z){const t=tileObjects.get(key(x,z));return 4+((t&&t.stack.length)||0)}
+function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.05);
+ const direction=new THREE.Vector3((move.right?1:0)-(move.left?1:0),0,(move.back?1:0)-(move.forward?1:0));
+ if(direction.lengthSq()>0){direction.normalize();
+  const nx=THREE.MathUtils.clamp(player.position.x+direction.x*5*dt,.5,23.5);
+  const nz=THREE.MathUtils.clamp(player.position.z+direction.z*5*dt,.5,23.5);
+  // dinding: petak depan lebih tinggi dari 1 blok dari posisi kaki -> terhalang
+  if(groundY(Math.floor(nx),Math.floor(nz))-player.position.y<=1.05){
+   player.position.x=nx;player.position.z=nz;player.rotation.y=Math.atan2(direction.x,direction.z)}}
+ const gy=groundY(Math.floor(player.position.x),Math.floor(player.position.z));
+ if(jumping&&player.position.y<=gy+.01){velocityY=7.5;jumping=false}
+ velocityY-=20*dt;let ny=player.position.y+velocityY*dt;
+ if(ny<gy){ny=gy;velocityY=0}
+ player.position.y=ny;
+ camera.position.lerp(player.position.clone().add(cameraOffset),Math.min(1,dt*4));
+ camera.lookAt(player.position.clone().add(new THREE.Vector3(0,1,0)));
+ updatePlants();renderer.render(scene,camera)}
 refresh();animate();$('loading').style.display='none';
-toast('Selamat datang di Growmax! Klik rumput → garap 🟤, pilih seed, tekan E → tanam 🌱. Buka 🎒 Ransel [I].');
+toast('Selamat datang! 🌍 P = pindah/buat world · 🧱 pilih blok + E = bangun rumah · klik rumput = garap lalu tanam.');
 setInterval(save,20000);
 </script>
 </body></html>
