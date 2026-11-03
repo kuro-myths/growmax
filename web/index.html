@@ -7,6 +7,7 @@
 :root{color-scheme:dark;--bg:#101b14;--panel:#18291e;--line:#38523d;--green:#b5ef79;--gold:#ffd77a;--muted:#b6c4b4}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#86b9e8;color:#f3f8ef;font:14px/1.4 Inter,system-ui,sans-serif}#game{position:fixed;inset:0}canvas{display:block;width:100%;height:100%}
 .hud{position:fixed;z-index:5;inset:14px 14px auto;display:flex;justify-content:space-between;gap:12px;pointer-events:none}.brand,.stats,.panel,.toast,.crosshair,.hotbar,.modal{pointer-events:auto}.brand{background:#122019df;border:1px solid #ffffff2b;border-radius:14px;padding:9px 13px;font-weight:950;letter-spacing:.1em;box-shadow:0 8px 24px #0003}.brand span{color:var(--green)}.stats{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end;align-items:flex-start}.stat{background:#122019df;border:1px solid #ffffff2b;border-radius:12px;padding:8px 11px;font-weight:800;box-shadow:0 8px 24px #0003;min-width:84px}.stat b{color:var(--green)}
+.currency{display:flex;gap:6px;align-items:center}.currency span{padding:5px 8px;border:1px solid #ffffff24;border-radius:8px;background:#ffffff0b;font-size:12px;font-weight:850}.currency b{color:var(--gold)}
 .xpbar{height:5px;background:#ffffff20;border-radius:4px;margin-top:5px;overflow:hidden}.xpbar i{display:block;height:100%;background:linear-gradient(90deg,#b5ef79,#ffd77a);border-radius:4px}
 .bottom{position:fixed;z-index:5;left:50%;bottom:16px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;width:min(96vw,820px);pointer-events:none}.hotbar{display:flex;gap:5px;padding:7px;background:#122019e8;border:1px solid #ffffff35;border-radius:15px;box-shadow:0 12px 35px #0005;flex-wrap:wrap;justify-content:center;max-width:100%}.slot{width:48px;height:54px;border:1px solid #ffffff24;background:#ffffff0b;color:#fff;border-radius:10px;display:grid;place-items:center;gap:0;cursor:pointer;font-size:19px;position:relative;padding:2px 0}.slot small{font-size:8px;color:#d4dfd1;max-width:44px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.slot.active{border:2px solid var(--green);background:#b5ef7926;box-shadow:0 0 0 2px #b5ef7930}.slot em{position:absolute;right:3px;top:1px;font-size:10px;font-style:normal;color:var(--gold)}.slot .rare{position:absolute;left:3px;top:1px;width:6px;height:6px;border-radius:50%}
 .side{position:fixed;z-index:5;right:14px;top:92px;width:196px;background:#122019dc;border:1px solid #ffffff2b;border-radius:14px;padding:12px;box-shadow:0 8px 24px #0003}.side b{color:var(--green)}.side button,.modal button,.invtab,.menu button{border:1px solid #ffffff25;background:#29432f;color:#f2f7ed;padding:8px 10px;border-radius:9px;cursor:pointer;font:inherit;font-weight:750}.side button{width:100%;margin-top:7px}.side button:hover,.modal button:hover,.invtab:hover,.menu button:hover{background:#3c5d3d}.side .sub{color:#c1d0bf;font-size:11px;margin-top:6px}
@@ -29,13 +30,15 @@
 <body>
 <div id="loading">🌱 MEMUAT DUNIA GROWMAX…</div><div id="game"></div>
 <div class="hud"><div class="brand">🌱 GROW<span>MAX</span> <small style="font-size:9px;color:#c2d1bd">3D WORLD</small></div><div class="stats">
- <div class="stat">💎 <b id="gems">20</b></div>
+ <div class="stat">💎 <b id="gems">20</b></div><div class="stat currency"><span>🔒 WL <b id="wl">1</b></span><span>💠 DL <b id="dl">0</b></span><span>🔷 BGL <b id="bgl">0</b></span></div>
  <div class="stat">⭐ Lv <b id="level">1</b><div class="xpbar"><i id="xpfill" style="width:0%"></i></div></div>
  <div class="stat">🌾 <b id="harvests">0</b></div>
 </div></div>
 <div class="side">
  <b id="worldname">WORLD: STARTER</b>
- <button id="worldBtn">🌍 Pindah World [P]</button>
+ <button id="worldBtn">🌍 Pindah / Buat World [P]</button>
+ <button id="lockBtn">🔒 World Lock</button>
+ <button id="chatBtn">💬 Chat World</button>
  <button id="storeBtn">🏪 Toko [B]</button>
  <button id="invBtn">🎒 Ransel [I]</button>
  <button id="analysisBtn">🔍 Analisis Level</button>
@@ -56,6 +59,8 @@
  <div class="sechead">World yang sudah kamu kunjungi</div><div id="worldList"></div>
  <p style="margin-top:10px">Aturan: huruf kecil a-z, angka 0-9, tanda "-", 3–20 karakter. Terrain & fitur tiap world di-generate dari kata kuncinya (seed) dan progres tiap world tersimpan terpisah.</p>
 </div>
+<div class="modal" id="lockModal"><div class="modalhead"><div><h2>🔒 World Lock</h2><p>Kunci world dan atur akses edit. Satu WL mengunci satu world.</p></div><button id="closeLock">✕</button></div><div id="lockBody"></div></div>
+<div class="modal" id="chatModal"><div class="modalhead"><div><h2>💬 Chat World</h2><p id="chatStatus">Mode lokal — pesan belum terkirim ke pemain lain.</p></div><button id="closeChat">✕</button></div><div id="chatLog" style="height:180px;overflow:auto;background:#0e1a12;border-radius:10px;padding:10px;font-size:12px"></div><div class="worldinput"><input id="chatInput" maxlength="180" placeholder="Ketik pesan atau /help"><button id="sendChat">Kirim</button></div><p>Perintah prototipe: /help, /who, /world. Chat online dan voice proximity memerlukan server multiplayer.</p></div>
 <div class="modal" id="store"><div class="modalhead"><div><h2>🏪 Toko</h2><p>Beli benih & blok bangunan dengan gems.</p></div><button id="closeStore">✕</button></div><div class="filter" id="storeFilter"></div><div id="storeItems"></div><div class="sechead">🧱 Blok Bangunan</div><div id="storeBlocks"></div></div>
 <div class="modal" id="inventory"><div class="modalhead"><div><h2>🎒 Ransel</h2><p id="invSummary"></p></div><button id="closeInv">✕</button></div><div class="filter" id="invTabs"></div><div id="invItems"></div></div>
 <div class="modal" id="analysis"><div class="modalhead"><div><h2>🔍 Analisis Level</h2><p>Progres, sumber XP, dan zona yang terbuka.</p></div><button id="closeAnalysis">✕</button></div><div id="analysisBody"></div></div>
@@ -110,11 +115,12 @@ const BLOCKS=[
 const blockById=id=>BLOCKS.find(b=>b.id===id)||BLOCKS[0];
 const ZONES=[{name:'Permukaan',lv:1},{name:'Bawah Tanah',lv:6},{name:'Gua',lv:11},{name:'Gua Dalam',lv:21},{name:'Magma',lv:31}];
 // ============ STATE (kompatibel save lama) ============
-const DEFAULTS={gems:20,level:1,xp:0,xpTotal:0,harvests:0,planted:0,gemsEarned:0,selected:0,
+const DEFAULTS={gems:20,wl:1,dl:0,bgl:0,level:1,xp:0,xpTotal:0,harvests:0,planted:0,gemsEarned:0,selected:0,
  inventory:{door:1},blockInv:{wood:60,brick:30,stone:40,sand:20,glass:20},
  xpLog:[],world:'starter',worlds:{starter:{tiles:{},player:{x:12,z:15},created:Date.now()}},tiles:{}};
 let loaded=null;try{loaded=JSON.parse(localStorage.getItem(SAVE_KEY))}catch{}
 const state=Object.assign({},DEFAULTS,loaded||{});
+state.wl=Math.max(0,Number(state.wl)||0);state.dl=Math.max(0,Number(state.dl)||0);state.bgl=Math.max(0,Number(state.bgl)||0);
 state.inventory=Object.assign({},DEFAULTS.inventory,(loaded&&loaded.inventory)||{});
 state.blockInv=Object.assign({},DEFAULTS.blockInv,(loaded&&loaded.blockInv)||{});
 state.xpLog=(loaded&&loaded.xpLog)||[];
@@ -214,6 +220,7 @@ function refresh(){
  $('gems').textContent=state.gems;$('level').textContent=state.level;$('harvests').textContent=state.harvests;
  $('xpfill').style.width=Math.min(100,Math.round(state.xp/(state.level*100)*100))+'%';
  $('worldname').textContent='WORLD: '+state.world.toUpperCase();
+ $('wl').textContent=state.wl;$('dl').textContent=state.dl;$('bgl').textContent=state.bgl;
  const bar=$('hotbar');bar.innerHTML='';
  HOTBAR.forEach((it,i)=>{const b=document.createElement('button');b.className='slot'+(state.selected===i?' active':'');
   if(it.kind==='seed'){const s=it.ref,t=tierOf(s.rarity);
@@ -363,7 +370,9 @@ function switchWorld(name){
  if(name===state.world){toast('Kamu sudah di world "'+name+'".');return}
  const cur=state.worlds[state.world];cur.tiles=state.tiles;cur.player={x:player.position.x,z:player.position.z};
  const isNew=!state.worlds[name];
- state.worlds[name]=state.worlds[name]||{tiles:{},player:{x:12,z:15},created:Date.now()};
+ if(isNew&&state.wl<1){toast('Membuat world baru memerlukan 1 WL untuk menguncinya.');return}
+ if(isNew){state.wl--;state.worlds[name]={tiles:{},player:{x:12,z:15},created:Date.now(),owner:'local-player',locked:true,access:['local-player']};}
+ else state.worlds[name]=state.worlds[name]||{tiles:{},player:{x:12,z:15},created:Date.now(),owner:'local-player',locked:true,access:['local-player']};
  state.world=name;state.tiles=state.worlds[name].tiles;
  buildWorld(name);syncTiles();
  const wp=state.worlds[name].player||{x:12,z:15};
@@ -372,6 +381,11 @@ function switchWorld(name){
  $('worldModal').classList.remove('open');
  toast(isNew?'🌍 World "'+name+'" dibuat! Terrain di-generate khusus dari kata kuncinya.':'🌍 Masuk world "'+name+'" — selamat datang kembali!')}
 function openWorldModal(){renderWorldList();$('worldInput').value='';$('worldModal').classList.add('open');setTimeout(()=>$('worldInput').focus(),50)}
+function openLock(){const w=state.worlds[state.world]||{};const locked=!!w.locked;$('lockBody').innerHTML='<div class="xpline">World: <b>'+state.world.toUpperCase()+'</b></div><div class="xpline">Status: <b>'+(locked?'🔒 Terkunci':'🔓 Tidak terkunci')+'</b></div><div class="xpline">Pemilik: <b>'+(w.owner||'Belum ada')+'</b></div><p>WL tersedia: '+state.wl+' · DL: '+state.dl+' · BGL: '+state.bgl+'</p><button id="toggleWorldLock">'+(locked?'Lepas kunci':'Pasang 1 WL')+'</button><p style="font-size:11px">Prototipe lokal: daftar izin belum tersinkron antar pemain.</p>';document.getElementById('toggleWorldLock').onclick=()=>{if(locked){w.locked=false;w.owner=null;w.access=[];toast('World dibuka.')}else if(state.wl>0){state.wl--;w.locked=true;w.owner='local-player';w.access=['local-player'];toast('World berhasil dikunci (-1 WL).')}else{toast('WL tidak cukup.');return}save();refresh();openLock()};$('lockModal').classList.add('open')}
+$('lockBtn').onclick=openLock;$('closeLock').onclick=()=>$('lockModal').classList.remove('open');
+const chatHistory=[];function openChat(){$('chatModal').classList.add('open');renderChat()}function renderChat(){$('chatLog').innerHTML=chatHistory.map(m=>'<div><b>'+m.from+':</b> '+m.text+'</div>').join('');$('chatLog').scrollTop=$('chatLog').scrollHeight}
+function sendChat(){const raw=$('chatInput').value.trim();if(!raw)return;let text=raw;if(raw==='/help')text='Perintah: /help, /who, /world';else if(raw==='/who')text='Mode lokal: hanya kamu yang berada di world ini.';else if(raw==='/world')text='World saat ini: '+state.world;chatHistory.push({from:'Kamu',text});$('chatInput').value='';renderChat()}
+$('chatBtn').onclick=openChat;$('closeChat').onclick=()=>$('chatModal').classList.remove('open');$('sendChat').onclick=sendChat;$('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat()});
 $('worldBtn').onclick=openWorldModal;$('closeWorld').onclick=()=>$('worldModal').classList.remove('open');
 $('goWorld').onclick=()=>switchWorld($('worldInput').value);
 $('worldInput').addEventListener('keydown',e=>{if(e.key==='Enter')switchWorld($('worldInput').value)});
