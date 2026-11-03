@@ -1,0 +1,44 @@
+name: Export Godot Web
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "godot/**"
+      - ".github/workflows/godot-web-export.yml"
+  workflow_dispatch:
+
+jobs:
+  export-web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unduh Godot 4.3 + export templates
+        run: |
+          mkdir -p tools ~/.local/share/godot/export_templates/4.3.stable
+          curl -sL https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_linux.x86_64.zip -o tools/godot.zip
+          curl -sL https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_export_templates.tpz -o tools/templates.tpz
+          unzip -q tools/godot.zip -d tools
+          unzip -q tools/templates.tpz -d tools/templates
+          mv tools/templates/templates/* ~/.local/share/godot/export_templates/4.3.stable/
+          chmod +x tools/Godot_v4.3-stable_linux.x86_64
+          tools/Godot_v4.3-stable_linux.x86_64 --version
+
+      - name: Import project
+        run: tools/Godot_v4.3-stable_linux.x86_64 --headless --path godot --import
+
+      - name: Export Web (GL Compatibility)
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/build/web"
+          tools/Godot_v4.3-stable_linux.x86_64 --headless --path godot --export-release "Web" "$GITHUB_WORKSPACE/build/web/index.html"
+          ls -la "$GITHUB_WORKSPACE/build/web"
+
+      - name: Deploy ke branch godot-web
+        uses: peaceiris/gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build/web
+          publish_branch: godot-web
+          force_orphan: true
+          commit_message: "deploy: ekspor web Godot dari ${{ github.sha }}"
