@@ -70,10 +70,18 @@ func _material(color: Color) -> StandardMaterial3D:
     material.roughness = 0.85
     return material
 
+# Keyboard input must never drive the character while a chat or other text
+# control owns GUI focus. Input.is_key_pressed() alone ignores that distinction.
+func _is_text_entry_focused() -> bool:
+    var focused := get_viewport().gui_get_focus_owner()
+    return focused is LineEdit or focused is TextEdit or focused is CodeEdit
+
 func _physics_process(delta: float) -> void:
+    var typing := _is_text_entry_focused()
     var axis := Vector2.ZERO
-    axis.x = float(Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT)) - float(Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT))
-    axis.y = float(Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN)) - float(Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP))
+    if not typing:
+        axis.x = float(Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT)) - float(Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT))
+        axis.y = float(Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN)) - float(Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP))
     axis = axis.normalized() if axis.length() > 1.0 else axis
 
     var speed := SWIM_SPEED if in_water else SPEED
@@ -82,9 +90,9 @@ func _physics_process(delta: float) -> void:
 
     if not is_on_floor():
         velocity.y -= (5.0 if in_water else 22.0) * delta
-    elif Input.is_key_pressed(KEY_SPACE):
+    elif not typing and Input.is_key_pressed(KEY_SPACE):
         velocity.y = 2.0 if in_water else JUMP_VELOCITY
-    else:
+    elif is_on_floor():
         velocity.y = 0.0
 
     if in_water:
@@ -93,7 +101,7 @@ func _physics_process(delta: float) -> void:
     move_and_slide()
     global_position.x = clampf(global_position.x, 0.5, 27.5)
     global_position.z = clampf(global_position.z, 0.5, 27.5)
-    if Input.is_key_pressed(KEY_R):
+    if not typing and Input.is_key_pressed(KEY_R):
         respawn()
 
 func enter_water() -> void:
