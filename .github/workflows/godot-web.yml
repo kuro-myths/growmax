@@ -38,6 +38,25 @@ jobs:
           godot --headless --path web/godot-source --editor --quit
           godot --headless --path web/godot-source --export-release "Web" ../index.html
 
+      - name: Polish official Godot HTML shell for responsive fullscreen
+        shell: python
+        run: |
+          from pathlib import Path
+          page = Path("web/index.html")
+          html = page.read_text(encoding="utf-8")
+          css = """
+          html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; background: #86c9ed; }
+          body { position: fixed; inset: 0; touch-action: none; }
+          #canvas { position: absolute; inset: 0; display: block; width: 100vw; height: 100vh; outline: none; }
+          #status { background: linear-gradient(145deg, #15334b, #285c76); font-family: Arial, sans-serif; }
+          #status-splash { max-width: min(70vw, 560px); max-height: 55vh; object-fit: contain; }
+          #status-progress { accent-color: #74d66d; width: min(60vw, 420px); }
+          #status-notice { max-width: min(80vw, 620px); font-family: Arial, sans-serif; }
+          """
+          html = html.replace("</style>", css + "\\n</style>", 1)
+          html = html.replace('content="width=device-width, user-scalable=no, initial-scale=1.0"', 'content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"')
+          page.write_text(html, encoding="utf-8")
+
       - name: Verify export artifacts
         shell: bash
         run: |
