@@ -1,80 +1,112 @@
 # 🌱 GrowCraft 3D
 
-> Sandbox farming voxel — gabungan konsep **Growtopia** (farming, seed, world, gems) dan **Minecraft** (dunia voxel 3D). Prototipe playable, siap deploy ke **Vercel** sebagai static site.
-
-Play in browser: tanam → siram → tunggu → panen → **selalu dapat seed + gem** sesuai rarity & level! 💎
+> Sandbox farming voxel 3D — konsep **Growtopia** (farming, seed, world, gems) bertemu **Minecraft** (dunia voxel 3D, block placement), dengan arsitektur **hybrid Java × Bedrock inspired**: server-authoritative, modular, dan data-driven.
+>
+> Dibangun sesuai master prompt: **Godot 4 + C#** · **ASP.NET Core** · **PostgreSQL** · **Redis** · **Docker**.
 
 ---
 
-## ✨ Fitur
+## 🎮 Gameplay (sesuai konsep visual)
 
-| Fitur | Status |
-|---|---|
-| Dunia voxel isometric 3D (grass/dirt/stone/bedrock/wood/sand/soil) | ✅ |
-| Player voxel 3D + kontrol WASD / joystick HP | ✅ |
-| Garap tanah, pasang & hancurkan block | ✅ |
-| Farming: tanam seed → timer real-time → 5 tahap tumbuh → panen | ✅ |
-| **Reward system: panen SELALU dapat seed + gem** (rarity + bonus level 3%/lvl) | ✅ |
-| Sistem penyiraman 💧 (air ≥ 60% saat panen = bonus gem +25%) | ✅ |
-| Toko seed online (beli pakai gems) + rarity (common → legendary) | ✅ |
-| Level & XP dengan bonus panen | ✅ |
-| Day/night cycle + matahari/bulan/bintang | ✅ |
-| Kamera smooth-follow + zoom scroll | ✅ |
-| SFX WebAudio tanpa aset | ✅ |
-| Autosave localStorage — **tanaman tetap tumbuh saat offline** (timestamp) | ✅ |
-| Mobile support (joystick + tombol aksi, double-tap tanam) | ✅ |
-| Multiplayer / voice chat / backend server | 🔜 roadmap |
+- Dunia voxel 3D: permukaan rumput → tanah → batu → **bedrock**, plus **floating islands** dan pantai pasir
+- Karakter voxel blocky 3D, third-person camera
+- **Farming ala Growtopia**: punch rumput → **Tanah Garap** → tanam seed → timer real-time → **siap panen** → punch → dapat **seed + gem**!
+- **Setiap panen SELALU dapat seed & gem** — jumlah tergantung rarity & level (bonus +3%/lvl), air ≥60% saat panen = **+25% gem**
+- Pertumbuhan dari **timestamp** → tanaman **tetap tumbuh saat pemain offline**
+- Day/night cycle (4 menit = 1 hari), toko seed, level & XP
 
-## 🎮 Kontrol
+## 🗂 Struktur monorepo
 
-**Desktop**
-- `WASD` / arrow — jalan
-- Klik kiri — garap rumput / hancurkan block / panen
-- Klik kanan — pasang block / tanam seed
-- `1-8` — pilih hotbar · `Q` — siram tanaman · `B` — toko · Scroll — zoom
-
-**HP**
-- Joystick kiri — jalan · Tap — garap/panen · Double-tap — tanam
-- Tombol ⛏️ 🌱 💧 — aksi di tile terakhir
-
-## 🌍 Tanaman & Balancing Awal
-
-| Tanaman | Rarity | Waktu | Gem | Harga toko |
-|---|---|---|---|---|
-| Door Tree | Common | 20s | 3-8 | 💎 5 |
-| Apple Tree | Uncommon | 45s | 10-20 | 💎 25 |
-| Crystal Tree | Rare | 90s | 40-70 | 💎 80 |
-| Diamond Tree | Epic | 3m | 120-250 | 💎 250 |
-| Legendary Tree | Legendary | 7m | 400-900 | 💎 800 |
-
-## 🚀 Deploy ke Vercel
-
-Static site zero-config — cukup push dan import:
-
-1. Push repo ini ke GitHub
-2. Buka [vercel.com/new](https://vercel.com/new) → import repo
-3. Framework preset: **Other** → **Deploy** selesai 🎉
-
-Atau via CLI:
-
-```bash
-npm i -g vercel
-vercel --prod
+```
+growmax/
+├── game-client/                  # Godot 4 + C# — dunia voxel, player, farming, HUD
+│   ├── Scenes/Main.tscn
+│   └── Scripts/
+│       ├── Core/Game.cs           # entry: HUD, inventory, reward engine, toko, day/night
+│       ├── Voxel/                 # VoxelWorld, BlockType (terrain + floating islands)
+│       ├── Player/                # PlayerController (WASD, jump, punch, interact)
+│       ├── Farming/               # PlantNode (growth stages + timer), FarmData (balancing)
+│       └── Networking/           # ApiClient (REST ke backend)
+├── backend/src/
+│   ├── GrowCraft.Domain/          # entity murni + HarvestConfig
+│   ├── GrowCraft.Infrastructure/  # EF Core DbContext (PostgreSQL, snake_case)
+│   └── GrowCraft.Api/             # REST API server-authoritative + Dockerfile
+├── database/init/                 # DDL + seed data (dipakai docker-compose)
+├── content/behavior_packs/        # config ekonomi data-driven (ala Bedrock)
+├── docs/architecture.md
+└── docker-compose.yml             # postgres + redis + api
 ```
 
-## 🧱 Roadmap (Master Prompt GrowCraft 3D)
+## 🚀 Menjalankan
 
-- [x] **Phase P** — prototype playable (client, localStorage)
-- [ ] **Phase 1-2** — Godot 4 + C#, voxel engine chunk-based, greedy meshing
-- [ ] **Phase 3** — farming penuh di engine (growth server-side, snapshot DB)
-- [ ] **Phase 4** — inventory & crafting
-- [ ] **Phase 5** — multiplayer: ASP.NET Core dedicated server + ENet/UDP
-- [ ] **Phase 6** — ekonomi: marketplace P2P, harvest reward server-authoritative
-- [ ] **Phase 7** — voice chat (WebRTC/LiveKit) + plugin/behavior-pack system
-- [ ] **Phase 8** — admin panel Next.js, online store + IAP
-- [ ] **Phase 9** — optimasi, anti-cheat, CI/CD
+### 1. Backend (PostgreSQL + Redis + API)
 
-Tech stack target: **Godot 4 + C#** · **ASP.NET Core** · **PostgreSQL** · **Redis** · **Next.js** · **Docker**
+```bash
+docker compose up -d --build
+# API siap di http://localhost:5000 — schema & seed data otomatis dimuat
+```
+
+Coba API:
+
+```bash
+# daftar akun
+curl -X POST http://localhost:5000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"username":"fule","password":"rahasia123"}'
+# => {"token":"eyJ..."}
+
+# cek seed yang tersedia
+curl http://localhost:5000/api/store/seeds
+
+# (dengan token) buat world, garap, tanam, siram, panen
+TOKEN="eyJ..."
+curl -X POST http://localhost:5000/api/worlds -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" -d '{"name":"kebun-fule","isPublic":true}'
+```
+
+### 2. Game client (Godot 4.4 + .NET 8 SDK)
+
+```bash
+cd game-client
+godot --path .        # buka folder ini dari Godot editor lalu tekan F5
+```
+
+**Kontrol:** WASD jalan · Space lompat · klik kiri punch (garap/panen/hancurkan) · `E` tanam/pasang · `Q` siram · `1-8` hotbar · `B` toko · `F` toggle demo 60× (tanaman tumbuh cepat untuk testing)
+
+## 🔐 Server-authoritative (yang penting!)
+
+| Halusnya | Implementasi |
+|---|---|
+| Waktu tumbuh | `plants.planted_at` UTC di PostgreSQL — client hanya menampilkan sisa waktu |
+| Reward panen | Dihitung server (`POST /api/farming/harvest`) dari `seed_definitions` + bonus level + bonus air |
+| Pertumbuhan offline | Otomatis — hanya butuh `now - planted_at` |
+| Inventory & gem | Tabel `player_inventory` + `player_profiles.gems`, transaksi EF Core |
+| Audit | `harvest_logs` + `transactions` |
+
+> **Status Phase 1:** client menjalankan sim lokal dengan rumus **identik** dengan server (satu sumber balancing di `FarmData` ↔ `harvest_config.json` ↔ `seed_definitions`). Sinkronisasi farming client↔server realtime ada di Phase 5 (ENet/UDP + dedicated server). Endpoint REST-nya **sudah jalan** dan bisa dipakai penuh via curl.
+
+## 🌍 Balancing awal (bukan angka resmi Growtopia)
+
+| Tanaman | Rarity | Waktu | Gem | Seed |
+|---|---|---|---|---|
+| Door Tree | Common | 5 mnt | 3-8 | 1-2 |
+| Apple Tree | Uncommon | 15 mnt | 10-20 | 1-3 |
+| Pine Tree | Uncommon | 20 mnt | 12-26 | 1-3 |
+| Crystal Tree | Rare | 1 jam | 40-70 | 2-4 |
+| Diamond Tree | Epic | 3 jam | 120-250 | 3-5 |
+| Legendary Tree | Legendary | 24 jam | 400-900 | 5-9 |
+
+## 🗺️ Roadmap (master prompt A–V)
+
+- [x] **Phase 1 — Foundation**: monorepo, backend API + DB schema + Docker, Godot client playable (world, player, farming, HUD, toko)
+- [ ] **Phase 2 — Voxel Engine**: chunk 16³, greedy meshing, world editor penuh
+- [ ] **Phase 3 — Farming penuh server-side**: sync client↔server, snapshot
+- [ ] **Phase 4 — Inventory & crafting**
+- [ ] **Phase 5 — Multiplayer**: dedicated server ENet/UDP, presence Redis, chat
+- [ ] **Phase 6 — Ekonomi**: marketplace P2P, trade, world lock
+- [ ] **Phase 7 — Voice chat (WebRTC/LiveKit) + plugin/behavior-pack loader**
+- [ ] **Phase 8 — Admin panel Next.js + online store & IAP**
+- [ ] **Phase 9 — Optimasi, anti-cheat, CI/CD GitHub Actions**
 
 ## 📄 Lisensi
 

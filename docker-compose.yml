@@ -1,0 +1,46 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: growcraft-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-growcraft}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-growcraft}
+      POSTGRES_DB: ${POSTGRES_DB:-growcraft}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U growcraft"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: growcraft-redis
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redisdata:/data
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: src/GrowCraft.Api/Dockerfile
+    container_name: growcraft-api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - DATABASE_URL=Host=db;Port=5432;Database=growcraft;Username=growcraft;Password=growcraft
+      - JWT_KEY=${JWT_KEY:-dev-secret-ganti-di-produksi-min-32-char}
+    ports:
+      - "5000:8080"
+
+volumes:
+  pgdata:
+  redisdata:

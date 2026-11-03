@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "description": "Data-driven harvest reward config — inspired by Bedrock behavior packs. Server membaca nilai ini; sumber kebenaran hasil panen ada di server, bukan client.",
+  "levelBonusPerLevel": 0.03,
+  "waterBonusThreshold": 60,
+  "waterBonusMultiplier": 1.25,
+  "minimumSeedsOnHarvest": 1,
+  "xpPerHarvestBase": 5,
+  "xpPerGemUnit": 0.25,
+  "waterDecayPerSecond": 0.2,
+  "seeds": [
+    { "id": "door",      "name": "Door Tree",      "rarity": "common",     "growthSeconds": 300,   "gem": [3, 8],     "seed": [1, 2], "price": 5 },
+    { "id": "apple",     "name": "Apple Tree",     "rarity": "uncommon",   "growthSeconds": 900,   "gem": [10, 20],   "seed": [1, 3], "price": 25 },
+    { "id": "pine",      "name": "Pine Tree",      "rarity": "uncommon",   "growthSeconds": 1200,  "gem": [12, 26],   "seed": [1, 3], "price": 30 },
+    { "id": "crystal",   "name": "Crystal Tree",   "rarity": "rare",       "growthSeconds": 3600,  "gem": [40, 70],   "seed": [2, 4], "price": 80 },
+    { "id": "diamond",   "name": "Diamond Tree",   "rarity": "epic",      "growthSeconds": 10800, "gem": [120, 250], "seed": [3, 5], "price": 250 },
+    { "id": "legendary", "name": "Legendary Tree",  "rarity": "legendary", "growthSeconds": 86400, "gem": [400, 900], "seed": [5, 9], "price": 800 }
+  ]
+}

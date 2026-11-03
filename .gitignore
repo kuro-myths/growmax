@@ -1,0 +1,27 @@
+# .NET
+bin/
+obj/
+*.user
+publish/
+
+# Godot
+.godot/
+*.translation
+export_presets.cfg
+builds/
+*.exe
+*.apk
+*.pck
+
+# Env & IDE
+.env
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
