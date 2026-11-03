@@ -303,7 +303,7 @@ function refresh(){
    b.innerHTML='<span class="rare" style="background:'+t.color+'"></span><span>'+iconHtml(s.id)+'</span><small>'+s.name.replace('Pohon ','')+'</small><em>'+((state.inventory[s.id]||0))+'</em>';
    b.title=s.name+' · '+t.name+' ('+s.rarity+')';}
   else if(it.kind==='block'){const bl=it.ref;
-   b.innerHTML='<span>'+iconHtml(bl.id)+'</span><small>'+bl.name.replace('Blok ','')+'</small><em>'+((state.blockInv[bl.id]||0))+'</em>;
+   b.innerHTML='<span>'+iconHtml(bl.id)+'</span><small>'+bl.name.replace('Blok ','')+'</small><em>'+((state.blockInv[bl.id]||0))+'</em>';
    b.title=bl.name+' — E untuk pasang';}
   else{const tool=it.ref;b.innerHTML='<span>'+iconHtml(tool.id)+'</span><small>'+tool.name+'</small><em>'+(state.tools.pickaxe||0)+'/100</em>';b.title='Linggis · daya tahan '+(state.tools.pickaxe||0)+'%';}
   b.onclick=()=>selectItem(i);bar.appendChild(b)})}
