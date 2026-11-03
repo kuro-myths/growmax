@@ -59,7 +59,7 @@ func _build_camera() -> void:
     camera.position = Vector3(0, 19, 19)
     camera.rotation_degrees = Vector3(-45, 0, 0)
     camera.projection = Camera3D.PROJECTION_ORTHOGONAL
-    camera.size = 27.5
+    camera.size = 22.0
     camera.current = true
     camera.far = 150.0
     add_child(camera)
